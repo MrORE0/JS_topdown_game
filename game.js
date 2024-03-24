@@ -101,8 +101,22 @@ function draw() {
             ctx.rotate(arrow.rotation);
 
             // Draw the arrow
-            ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height);
-
+            //arrow goes left
+            if (arrow.xChange < 0 ){
+                ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
+            }
+            //arrow goes right
+            else if (arrow.xChange > 0 ){
+                ctx.drawImage(arrow_image, -arrow.width/80, -arrow.height*3, arrow.width, arrow.height);
+            }
+            //arrow goes down
+            else if (arrow.yChange > 0 ){
+                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
+            }
+            //arrow goes up
+            else{
+                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
+            }
             // Restore the canvas state
             ctx.restore();
         }
@@ -182,7 +196,6 @@ function move() {
         character.frameX = 0;
     }
 }
-
 
 function attack() {
     // Define arrow speed
