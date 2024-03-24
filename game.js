@@ -13,11 +13,11 @@ let arrow = {
     width : 7,
     height : 16,
     xChange : 0,
-    ychange : 0,
-    frameX : 0,
-    frameY : 0
+    yChange : 0,
+    rotation : 0
 }
 let arrow_image = new Image();
+let arrow_alive = false;
 
 let character = {
     x : 0,
@@ -25,7 +25,7 @@ let character = {
     width : 49,
     height : 49,
     xChange : 0,
-    ychange : 0,
+    yChange : 0,
 };
 
 let sprite_size = 96;
@@ -77,7 +77,38 @@ function draw() {
 
     // Draw character
     ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
+
+    // Draw arrow if it's alive
+    if (arrow_alive) {
+        // Update arrow position based on its speed
+        arrow.x += arrow.xChange || 0;
+        arrow.y += arrow.yChange || 0;
+
+        // Check for collision with canvas border
+        if (checkCanvasCollision(arrow)) {
+            // Handle collision with canvas border
+            arrow_alive = false; // Set arrow_alive to false or handle as required
+            arrow.xChange = 0;
+            arrow.yChange = 0;
+        } else {
+            // Save the current canvas state
+            ctx.save();
+
+            // Translate to the arrow's position
+            ctx.translate(arrow.x, arrow.y);
+
+            // Rotate the canvas based on the arrow's rotation angle
+            ctx.rotate(arrow.rotation);
+
+            // Draw the arrow
+            ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height);
+
+            // Restore the canvas state
+            ctx.restore();
+        }
+    }
 }
+
 
 function activate(event) {
     let key = event.key;
@@ -89,10 +120,12 @@ function activate(event) {
         moveLeft = true;
     } else if (key === "ArrowRight") {
         moveRight = true;
-    }else if (key === " "){
-        attack()
     }
-
+    if (key === " "){
+        if (arrow_alive == false){
+            attack()
+        }
+    }
 }
 
 function deactivate(event) {
@@ -112,31 +145,37 @@ function move() {
     let speed = 6; // Adjust this value as needed for the desired speed
 
     if (moveUp || moveDown || moveLeft || moveRight){
-        if (moveUp && moveLeft) {
-            character.y -= speed / Math.sqrt(2); // Move diagonally up-left
-            character.x -= speed / Math.sqrt(2);
-        } else if (moveUp && moveRight) {
-            character.y -= speed / Math.sqrt(2); // Move diagonally up-right
-            character.x += speed / Math.sqrt(2);
-        } else if (moveDown && moveLeft) {
-            character.y += speed / Math.sqrt(2); // Move diagonally down-left
-            character.x -= speed / Math.sqrt(2);
-        } else if (moveDown && moveRight) {
-            character.y += speed / Math.sqrt(2); // Move diagonally down-right
-            character.x += speed / Math.sqrt(2);
-        } else if (moveUp) {
+        let newX = character.x;
+        let newY = character.y;
+
+        if (moveUp) {
+            newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
+        } 
+        if (moveDown) {
+            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
+        } 
+        if (moveLeft) {
+            newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
+        } 
+        if (moveRight) {
+            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
+        }
+
+        // Update character position
+        character.x = newX;
+        character.y = newY;
+
+        // Update character frame based on movement
+        if (moveUp) {
             character.frameY = 3;
-            character.y -= speed;
         } else if (moveDown) {
             character.frameY = 0;
-            character.y += speed;
         } else if (moveLeft) {
             character.frameY = 1;
-            character.x -= speed;
         } else if (moveRight) {
             character.frameY = 2;
-            character.x += speed;
         }
+
         character.frameX = (character.frameX + 1) % 4;
     }
     else{
@@ -144,55 +183,88 @@ function move() {
     }
 }
 
+
 function attack() {
     // Define arrow speed
-    let arrowSpeed = 8;
-
+    let arrowSpeed = 10;
     // Rotate and draw the arrow based on the character's facing direction
     if (character.frameY === 2) {
         // Character is facing right
-        ctx.save(); // Save the current canvas state
+        ctx.save();
         ctx.translate(character.x + character.width / 2, character.y + character.height);
         ctx.rotate(Math.PI / 2); // Rotate arrow 90 degrees clockwise
         ctx.drawImage(arrow_image, -arrow.height*1.5, -arrow.width*4, arrow.width, arrow.height);
-        ctx.restore(); // Restore the canvas state
+        ctx.restore();
+        arrow.x = character.x + character.width / 2 - arrow.height*1.5;
+        arrow.y = character.y + character.height - arrow.width*4;
+        arrow.xChange = arrowSpeed;
+        arrow.rotation = Math.PI / 2;
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
         ctx.translate(character.x + character.width / 2, character.y + character.height);
-        ctx.rotate(Math.PI); // Rotate arrow 180 degrees
+        ctx.rotate(Math.PI);
         ctx.drawImage(arrow_image, -arrow.height / 5, -arrow.width*2, arrow.width, arrow.height);
         ctx.restore();
+        arrow.x = character.x + character.width / 2 - arrow.height / 5;
+        arrow.y = character.y + character.height - arrow.width*2;
+        arrow.yChange = arrowSpeed;
+        arrow.rotation = Math.PI;
     } else if (character.frameY === 3) {
        // Character is facing up
        ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y - arrow.height / 2, arrow.width, arrow.height);
+       arrow.x = character.x + character.width / 2.4;
+       arrow.y = character.y - arrow.height / 2;
+       arrow.yChange = -arrowSpeed;
+       arrow.rotation = 0
     } else if (character.frameY === 1) {
         // Character is facing left
         ctx.save();
         ctx.translate(character.x, character.y + character.height / 2);
-        ctx.rotate(-Math.PI / 2); // Rotate arrow 90 degrees counterclockwise
+        ctx.rotate(-Math.PI / 2); 
         ctx.drawImage(arrow_image, -arrow.height / 2, -arrow.width, arrow.width, arrow.height);
         ctx.restore();
+        arrow.x = character.x - arrow.height / 2;
+        arrow.y = character.y + character.height / 2 - arrow.width;
+        arrow.xChange = -arrowSpeed;
+        arrow.rotation = -Math.PI / 2;
     }
-
-    // Move the arrow based on character's direction
-    if (character.frameY === 0) {
-        // Character is facing down
-        arrow.y += arrowSpeed;
-    } else if (character.frameY === 1) {
-        // Character is facing left
-        arrow.x -= arrowSpeed;
-    } else if (character.frameY === 2) {
-        // Character is facing right
-        arrow.x += arrowSpeed;
-    } else if (character.frameY === 3) {
-        // Character is facing up
-        arrow.y -= arrowSpeed;
-    }
-
-    // Handle arrow collision and other logic here
+    arrow_alive = true;
 }
 
+function collision(object1, object2) {
+    // Calculate the boundaries of object1
+    let object1Left = object1.x;
+    let object1Right = object1.x + object1.width;
+    let object1Top = object1.y;
+    let object1Bottom = object1.y + object1.height;
+
+    // Calculate the boundaries of object2
+    let object2Left = object2.x;
+    let object2Right = object2.x + object2.width;
+    let object2Top = object2.y;
+    let object2Bottom = object2.y + object2.height;
+
+    // Check for intersection
+    if (object1Right > object2Left && 
+        object1Left < object2Right && 
+        object1Bottom > object2Top && 
+        object1Top < object2Bottom) {
+        return true; // Collided
+    } else {
+        return false; // Not collided
+    }
+}
+
+function checkCanvasCollision(object) {
+    //checking all the walls for collision, if one is true, returns true and otherwise false
+    return (
+        object.x < 0 || // Left border
+        object.x + object.width > CANVAS_WIDTH || // Right border
+        object.y < 0 || // Top border
+        object.y + object.height > CANVAS_HEIGHT // Bottom border
+    );
+}
 
 function load_assets(assets, callback){
     let num_assets = assets.length;
