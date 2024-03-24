@@ -159,14 +159,13 @@ function attack() {
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
-        // ctx.translate(character.x, character.y + character.height / 2);
         ctx.translate(character.x + character.width / 2, character.y + character.height);
         ctx.rotate(Math.PI); // Rotate arrow 180 degrees
-        ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
+        ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y + arrow.height / 2, arrow.width, arrow.height);
         ctx.restore();
     } else if (character.frameY === 3) {
-        // Character is facing up
-        ctx.drawImage(arrow_image, character.x + character.width, character.y + character.height / 2 - arrow.height / 2, arrow.width, arrow.height);
+       // Character is facing up
+       ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y - arrow.height / 2, arrow.width, arrow.height);
     } else if (character.frameY === 1) {
         // Character is facing left
         ctx.save();
