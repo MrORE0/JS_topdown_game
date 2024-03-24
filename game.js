@@ -161,7 +161,7 @@ function attack() {
         ctx.save();
         ctx.translate(character.x + character.width / 2, character.y + character.height);
         ctx.rotate(Math.PI); // Rotate arrow 180 degrees
-        ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y + arrow.height / 2, arrow.width, arrow.height);
+        ctx.drawImage(arrow_image, -arrow.height / 5, -arrow.width*2, arrow.width, arrow.height);
         ctx.restore();
     } else if (character.frameY === 3) {
        // Character is facing up
