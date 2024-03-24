@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="choosingCharacter.js" type="module"></script>
+    <link rel="stylesheet" href="choosingCharacter.css">
+    <title>LOST</title>
+</head>
+<body>
+    <table>
+        <caption>Choose your character</caption>
+        <tr>
+            <td id="villager" onclick="chooseCharacter(this)">
+                <h3 class="character_name">Villager</h3>
+                <p class="description">Not very special to be frank, but they sure do know a lot about farming...</p>
+            </td>
+            <td id="barbarian" onclick="chooseCharacter(this)">
+                <h3 class="character_name">Barbarian</h3>
+                <p class="description">Crazy person with knives and long hair. <em class="bonus">(Increased HP)</em></p>
+            </td>
+            <td id="wizard" onclick="chooseCharacter(this)">
+                <h3 class="character_name">Wizard</h3>
+                <p class="description">A wise man with the talent to manipulate reality.<em class="bonus">(Increased light range)</em></p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
