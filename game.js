@@ -154,7 +154,7 @@ function attack() {
         ctx.save(); // Save the current canvas state
         ctx.translate(character.x + character.width / 2, character.y + character.height);
         ctx.rotate(Math.PI / 2); // Rotate arrow 90 degrees clockwise
-        ctx.drawImage(arrow_image, character.x + character.width, character.y + character.height / 2 - arrow.height / 2, arrow.width, arrow.height);
+        ctx.drawImage(arrow_image, -arrow.height*1.5, -arrow.width*4, arrow.width, arrow.height);
         ctx.restore(); // Restore the canvas state
     } else if (character.frameY === 0) {
         // Character is facing down
