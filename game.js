@@ -37,8 +37,49 @@ let moveDown = false;
 let moveLeft = false;
 let moveRight = false;
 
+// learning to make the tilemap 
+// https://medium.com/geekculture/make-your-own-tile-map-with-vanilla-javascript-a627de67b7d9
 let background = [];
 let backgroundImage = new Image();
+let tileSize = 32;
+let tileOutputSize = 1;
+let updatedTileSize = tileSize * tileOutputSize;
+let tileAtlas = new Image();
+tileAtlas.src = "static/Dungeon_Tileset_at.png";
+
+// atlas is the tileset is used to make the map
+let atlasCol = 16;
+let atlasRow = 16;
+let mapCols = 25;
+let mapRows = 25;
+let mapHeight = mapRows * tileSize;
+let mapWidth = mapCols * tileSize;
+let mapArray = [[182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
+   [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+    [182, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 219],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 235],
+    [214, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+    [230, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 219],
+    [182, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 235],
+    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 153, 104, 104, 104, 104, 104, 153, 153, 153, 105, 127, 203],
+    [214, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 219],
+    [230, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 235],
+    [182, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
+    [214, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 235],
+    [230, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [182, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
+    [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
+    [214, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 219],
+    [230, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 235],
+    [182, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 219],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 235],
+    [214, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 187],
+    [182, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+    [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 219],
+    [230, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
+    [246, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 247, 248, 249, 250, 251]]
+
 
 document.addEventListener("DOMContentLoaded", startGame, false);
 
@@ -54,7 +95,7 @@ function startGame(){
     window.addEventListener("keyup", deactivate, false);
 
     load_assets([{"var": playerImage, "url": "static/character.png"},
-    {"var": backgroundImage, "url": "static/topdown.png"}, {"var": arrow_image, "url": "static/arrow.png"}], draw);
+    {"var": backgroundImage, "url": "static/Dungeon_Tileset_at.png"}, {"var": arrow_image, "url": "static/arrow.png"}], draw);
 }
 
 function draw() {
@@ -72,8 +113,45 @@ function draw() {
     // Clear the canvas
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw background if needed
-    // ctx.drawImage(backgroundImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    // used for drawing the map 
+    let mapIndex = 0;
+    let sourceX = 0;
+    let sourceY = 0;
+    // Draw background
+    for (let row = 0; row < mapArray.length; row++) {
+        for (let col = 0; col < mapArray[row].length; col++) {
+            let tileVal = mapArray[row][col];
+            if (tileVal !== 0) {
+                tileVal -= 1;
+                sourceY = Math.floor(tileVal / atlasCol) * tileSize;
+                sourceX = (tileVal % atlasCol) * tileSize;
+                ctx.save(); // Save the current canvas state
+                if (tileVal === 105) {
+                    // Adjust translation to center of the tile
+                    ctx.translate((col + 0.5) * updatedTileSize, (row + 0.5) * updatedTileSize);
+                    // Apply rotation of 180 degrees if tile value matches 105
+                    ctx.rotate(Math.PI); // Rotate by 180 degrees
+                    // Adjust the position back after rotation
+                    ctx.translate(-updatedTileSize / 2, -updatedTileSize / 2);
+                }
+                ctx.drawImage(
+                    tileAtlas,
+                    sourceX,
+                    sourceY,
+                    tileSize,
+                    tileSize,
+                    col * updatedTileSize,
+                    row * updatedTileSize,
+                    updatedTileSize,
+                    updatedTileSize
+                );
+                ctx.restore(); // Restore the canvas state
+            }
+            mapIndex++;
+        }
+    }
+
+
 
     // Draw character
     ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
@@ -157,7 +235,6 @@ function deactivate(event) {
 
 function move() {
     let speed = 6; // Adjust this value as needed for the desired speed
-
     if (moveUp || moveDown || moveLeft || moveRight){
         let newX = character.x;
         let newY = character.y;
@@ -166,13 +243,13 @@ function move() {
             newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
         } 
         if (moveDown) {
-            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
+            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 30)); // Ensure character doesn't move below the canvas
         } 
         if (moveLeft) {
-            newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
+            newX = Math.max(character.x - speed, 20); // Ensure character doesn't move left of the canvas
         } 
         if (moveRight) {
-            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
+            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width-20); // Ensure character doesn't move right of the canvas
         }
 
         // Update character position
