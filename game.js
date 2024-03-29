@@ -26,6 +26,8 @@ let character = {
     height : 49,
     xChange : 0,
     yChange : 0,
+    arrayX: 0, // these are the x and y on the background array
+    arrayY: 24
 };
 
 let sprite_size = 96;
@@ -56,29 +58,29 @@ let mapHeight = mapRows * tileSize;
 let mapWidth = mapCols * tileSize;
 let mapArray = [[182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
    [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [182, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 219],
+    [198, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 219],
     [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 235],
-    [214, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [230, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 219],
-    [182, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 235],
+    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+    [198, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 219],
+    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 235],
     [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 153, 104, 104, 104, 104, 104, 153, 153, 153, 105, 127, 203],
-    [214, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 219],
-    [230, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 235],
-    [182, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 219],
+    [198, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 235],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
     [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
-    [214, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 235],
-    [230, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [182, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 235],
+    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
     [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
-    [214, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 219],
-    [230, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 235],
-    [182, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 219],
+    [198, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 219],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 235],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 219],
     [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 235],
-    [214, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 187],
-    [182, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 187],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
     [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 219],
-    [230, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
-    [246, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 250, 247, 248, 249, 247, 248, 249, 250, 251]]
+    [198, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
+    [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251]]
 
 
 document.addEventListener("DOMContentLoaded", startGame, false);
@@ -86,8 +88,8 @@ document.addEventListener("DOMContentLoaded", startGame, false);
 function startGame(){
     canvas = document.querySelector("canvas");
     ctx = canvas.getContext("2d");
-    character.x = 0;
-    character.y = 0;
+    character.x = 30;
+    character.y = 700;
     CANVAS_WIDTH = canvas.width;
     CANVAS_HEIGHT = canvas.height;
 
@@ -151,8 +153,6 @@ function draw() {
         }
     }
 
-
-
     // Draw character
     ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
 
@@ -201,7 +201,6 @@ function draw() {
     }
 }
 
-
 function activate(event) {
     let key = event.key;
     if (key === "ArrowUp") {
@@ -233,23 +232,140 @@ function deactivate(event) {
     }
 }
 
+// let movesY = 0;
+// let movesX = 0;
+// function move() {
+//     let speed = 8; // Adjust this value as needed for the desired speed
+//     if (moveUp || moveDown || moveLeft || moveRight) {
+//         let newX = character.x;
+//         let newY = character.y;
+
+//         if (moveUp) {
+//             newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
+//             if (movesY == 4){ // character moved up 5 times and now its on a new tile
+//                 if (character.arrayY > 0 && character.arrayY < 25) {
+//                     // Update character.arrayX if within bounds
+//                     character.arrayY -= 1;
+//                 }
+//                 movesY = 0;
+//             }
+//             else{
+//                 if (movesY<(tileSize/speed)){ // he is is still on the same tile
+//                     movesY+=1;
+//                 }
+//             }
+//         }
+//         if (moveDown) {
+//             newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
+//             if (movesY == 0){ // character moved down 5 times and now its on a new tile
+//                 if (character.arrayY >= 0 && character.arrayY < 25) {
+//                     // Update character.arrayX if within bounds
+//                     character.arrayY += 1;
+//                 }
+//                 movesY = 4; // it's 4 because not its on the top of the tile under it
+//             }
+//             else{
+//                 movesY -=1;
+//             }
+//         }
+//         if (moveLeft) {
+//             newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
+//             if (movesX == 0){ // character moved left 5 times and now its on a new tile
+//                 if (character.arrayX > 0 && character.arrayX <= 25) {
+//                     // Update character.arrayX if within bounds
+//                     character.arrayX -= 1;
+//                 }
+//                 movesX = 4;
+//             }
+//             else{
+//                 if (movesX<(tileSize/speed)){ // he is is still on the same tile
+//                     movesX-=1;
+//                 }
+//             }
+//         }
+//         if (moveRight) {
+//             newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
+//             if (movesX == 4){ // character moved right 5 times and now its on a new tile
+//                 if (character.arrayX >= 0 && character.arrayX < 25) {
+//                     // Update character.arrayX if within bounds
+//                     character.arrayX += 1;
+//                 }
+//                 movesX = 0;
+//             }
+//             else{
+//                 movesX += 1;
+//             }
+//         }
+//         console.log(character.arrayX) // x and y are great but the array x and y are not
+//         console.log(character.arrayY)
+//         console.log(mapArray[character.arrayY][character.arrayX])
+//         // checking for arrayX or arrayY for colliding with walls
+//         if (characterHitsWall(character.arrayX, character.arrayY)){
+//             return;
+//         }
+
+//         /*
+//         // Check for collision with objects (walls, enemies, items)
+//         if (checkCollisionWithObjects(character, arrow)){
+//             // remove arrow and from the above I wrote it so I don't see errors for now
+//             // Collision detected, do not update character's position
+//             return;
+//         }
+//         */
+
+//         // Update character position
+//         character.x = newX;
+//         character.y = newY;
+
+//         // Update character frame based on movement
+//         if (moveUp) {
+//             character.frameY = 3;
+//         } else if (moveDown) {
+//             character.frameY = 0;
+//         } else if (moveLeft) {
+//             character.frameY = 1;
+//         } else if (moveRight) {
+//             character.frameY = 2;
+//         }
+
+//         character.frameX = (character.frameX + 1) % 4;
+//     } else {
+//         character.frameX = 0;
+//     }
+// }
+
 function move() {
-    let speed = 6; // Adjust this value as needed for the desired speed
-    if (moveUp || moveDown || moveLeft || moveRight){
+    let speed = 8; // Adjust this value as needed for the desired speed
+
+    if (moveUp || moveDown || moveLeft || moveRight) {
         let newX = character.x;
         let newY = character.y;
 
         if (moveUp) {
             newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
-        } 
+        }
         if (moveDown) {
-            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 30)); // Ensure character doesn't move below the canvas
-        } 
+            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
+        }
         if (moveLeft) {
-            newX = Math.max(character.x - speed, 20); // Ensure character doesn't move left of the canvas
-        } 
+            newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
+        }
         if (moveRight) {
-            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width-20); // Ensure character doesn't move right of the canvas
+            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
+        }
+
+        // Map character's position to array indices (1 to 24)
+        character.arrayX = Math.max(1, Math.min(Math.floor(newX / tileSize) + 1, 24));
+        character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
+
+        console.log(character.arrayX);
+        console.log(character.arrayY);
+
+        console.log(mapArray[character.arrayY][character.arrayX]);
+
+        // checking for arrayX or arrayY for colliding with walls
+        if (objectHitsWall(character.arrayX, character.arrayY)) {
+            return;
         }
 
         // Update character position
@@ -268,11 +384,11 @@ function move() {
         }
 
         character.frameX = (character.frameX + 1) % 4;
-    }
-    else{
+    } else {
         character.frameX = 0;
     }
 }
+
 
 function attack() {
     // Define arrow speed
@@ -322,7 +438,18 @@ function attack() {
     arrow_alive = true;
 }
 
-function collision(object1, object2) {
+function objectHitsWall(arrayX, arrayY){
+    if (mapArray[arrayY][arrayX] === 105 || mapArray[arrayY][arrayX] === 104 || mapArray[arrayY][arrayX] === 247 || mapArray[arrayY][arrayX] === 186 || mapArray[arrayY][arrayX] === 103){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function checkCollisionWithObjects(object1, object2) {
+    // Implement collision detection logic with objects (walls, enemies, items)
+    // Return true if collision detected, otherwise return false
     // Calculate the boundaries of object1
     let object1Left = object1.x;
     let object1Right = object1.x + object1.width;
@@ -336,7 +463,7 @@ function collision(object1, object2) {
     let object2Bottom = object2.y + object2.height;
 
     // Check for intersection
-    if (object1Right > object2Left && 
+    if (object1Right > object2Left &&
         object1Left < object2Right && 
         object1Bottom > object2Top && 
         object1Top < object2Bottom) {
