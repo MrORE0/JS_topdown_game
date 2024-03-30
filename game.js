@@ -115,90 +115,14 @@ function draw() {
     // Clear the canvas
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // used for drawing the map 
-    let mapIndex = 0;
-    let sourceX = 0;
-    let sourceY = 0;
-    // Draw background
-    for (let row = 0; row < mapArray.length; row++) {
-        for (let col = 0; col < mapArray[row].length; col++) {
-            let tileVal = mapArray[row][col];
-            if (tileVal !== 0) {
-                tileVal -= 1;
-                sourceY = Math.floor(tileVal / atlasCol) * tileSize;
-                sourceX = (tileVal % atlasCol) * tileSize;
-                ctx.save(); // Save the current canvas state
-                if (tileVal === 105) {
-                    // Adjust translation to center of the tile
-                    ctx.translate((col + 0.5) * updatedTileSize, (row + 0.5) * updatedTileSize);
-                    // Apply rotation of 180 degrees if tile value matches 105
-                    ctx.rotate(Math.PI); // Rotate by 180 degrees
-                    // Adjust the position back after rotation
-                    ctx.translate(-updatedTileSize / 2, -updatedTileSize / 2);
-                }
-                ctx.drawImage(
-                    tileAtlas,
-                    sourceX,
-                    sourceY,
-                    tileSize,
-                    tileSize,
-                    col * updatedTileSize,
-                    row * updatedTileSize,
-                    updatedTileSize,
-                    updatedTileSize
-                );
-                ctx.restore(); // Restore the canvas state
-            }
-            mapIndex++;
-        }
-    }
+    // Draw the background and the walls
+    drawBackground();
 
     // Draw character
     ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
 
-    // Draw arrow if it's alive
-    if (arrow_alive) {
-        // Update arrow position based on its speed
-        arrow.x += arrow.xChange || 0;
-        arrow.y += arrow.yChange || 0;
-
-        // Check for collision with canvas border
-        if (checkCanvasCollision(arrow)) {
-            // Handle collision with canvas border
-            arrow_alive = false; // Set arrow_alive to false or handle as required
-            arrow.xChange = 0;
-            arrow.yChange = 0;
-        } else {
-            // Save the current canvas state
-            ctx.save();
-
-            // Translate to the arrow's position
-            ctx.translate(arrow.x, arrow.y);
-
-            // Rotate the canvas based on the arrow's rotation angle
-            ctx.rotate(arrow.rotation);
-
-            // Draw the arrow
-            //arrow goes left
-            if (arrow.xChange < 0 ){
-                ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            //arrow goes right
-            else if (arrow.xChange > 0 ){
-                ctx.drawImage(arrow_image, -arrow.width/80, -arrow.height*3, arrow.width, arrow.height);
-            }
-            //arrow goes down
-            else if (arrow.yChange > 0 ){
-                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            //arrow goes up
-            else{
-                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            // Restore the canvas state
-            ctx.restore();
-        }
-    }
+    // if arrow was shot this will animate it(redraw it)
+    reDrawingArrow();
 }
 
 function activate(event) {
@@ -288,8 +212,6 @@ function move() {
     }
 }
 
-
-
 function attack() {
     // Define arrow speed
     let arrowSpeed = 10;
@@ -336,6 +258,52 @@ function attack() {
         arrow.rotation = -Math.PI / 2;
     }
     arrow_alive = true;
+}
+
+function reDrawingArrow(){
+    // Draw arrow if it's alive
+    if (arrow_alive) {
+        // Update arrow position based on its speed
+        arrow.x += arrow.xChange || 0;
+        arrow.y += arrow.yChange || 0;
+
+        // Check for collision with canvas border
+        if (checkCanvasCollision(arrow)) {
+            // Handle collision with canvas border
+            arrow_alive = false; // Set arrow_alive to false or handle as required
+            arrow.xChange = 0;
+            arrow.yChange = 0;
+        } else {
+            // Save the current canvas state
+            ctx.save();
+
+            // Translate to the arrow's position
+            ctx.translate(arrow.x, arrow.y);
+
+            // Rotate the canvas based on the arrow's rotation angle
+            ctx.rotate(arrow.rotation);
+
+            // Draw the arrow
+            //arrow goes left
+            if (arrow.xChange < 0 ){
+                ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
+            }
+            //arrow goes right
+            else if (arrow.xChange > 0 ){
+                ctx.drawImage(arrow_image, -arrow.width/80, -arrow.height*3, arrow.width, arrow.height);
+            }
+            //arrow goes down
+            else if (arrow.yChange > 0 ){
+                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
+            }
+            //arrow goes up
+            else{
+                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
+            }
+            // Restore the canvas state
+            ctx.restore();
+        }
+    }
 }
 
 function objectHitsWall(arrayX, arrayY){
@@ -404,5 +372,45 @@ function load_assets(assets, callback){
             element.addEventListener("canplaythrough", loaded, false);
         }
         element.src = asset.url
+    }
+}
+
+function drawBackground(){
+    // used for drawing the map 
+    let mapIndex = 0;
+    let sourceX = 0;
+    let sourceY = 0;
+    // Draw background
+    for (let row = 0; row < mapArray.length; row++) {
+        for (let col = 0; col < mapArray[row].length; col++) {
+            let tileVal = mapArray[row][col];
+            if (tileVal !== 0) {
+                tileVal -= 1;
+                sourceY = Math.floor(tileVal / atlasCol) * tileSize;
+                sourceX = (tileVal % atlasCol) * tileSize;
+                ctx.save(); // Save the current canvas state
+                if (tileVal === 105) {
+                    // Adjust translation to center of the tile
+                    ctx.translate((col + 0.5) * updatedTileSize, (row + 0.5) * updatedTileSize);
+                    // Apply rotation of 180 degrees if tile value matches 105
+                    ctx.rotate(Math.PI); // Rotate by 180 degrees
+                    // Adjust the position back after rotation
+                    ctx.translate(-updatedTileSize / 2, -updatedTileSize / 2);
+                }
+                ctx.drawImage(
+                    tileAtlas,
+                    sourceX,
+                    sourceY,
+                    tileSize,
+                    tileSize,
+                    col * updatedTileSize,
+                    row * updatedTileSize,
+                    updatedTileSize,
+                    updatedTileSize
+                );
+                ctx.restore(); // Restore the canvas state
+            }
+            mapIndex++;
+        }
     }
 }
