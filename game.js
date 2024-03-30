@@ -333,7 +333,6 @@ function deactivate(event) {
 //         character.frameX = 0;
 //     }
 // }
-
 function move() {
     let speed = 8; // Adjust this value as needed for the desired speed
 
@@ -354,16 +353,22 @@ function move() {
             newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
         }
 
-        // Map character's position to array indices (1 to 24)
-        character.arrayX = Math.max(1, Math.min(Math.floor(newX / tileSize) + 1, 24));
-        character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
+        // Character's x and y position to array indices (1 to 24) so we can check for wall or item collision
+        if (moveLeft || moveDown) {
+            // Subtract 1 from the calculated array index to collide with walls before being on top of them
+            character.arrayX = Math.max(1, Math.min(Math.floor((newX + character.width / 4) / tileSize), 24)); 
+            character.arrayY = Math.max(1, Math.min(Math.floor((newY + character.height) / tileSize), 24));
+        } else {
+            character.arrayX = Math.max(1, Math.min(Math.floor(newX / tileSize) + 1, 24)); 
+            character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
+        }
 
         console.log(character.arrayX);
         console.log(character.arrayY);
 
         console.log(mapArray[character.arrayY][character.arrayX]);
 
-        // checking for arrayX or arrayY for colliding with walls
+        // Checking for arrayX or arrayY for colliding with walls
         if (objectHitsWall(character.arrayX, character.arrayY)) {
             return;
         }
@@ -388,6 +393,7 @@ function move() {
         character.frameX = 0;
     }
 }
+
 
 
 function attack() {
