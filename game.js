@@ -26,7 +26,7 @@ let character = {
     height : 49,
     xChange : 0,
     yChange : 0,
-    arrayX: 0, // these are the x and y on the background array
+    arrayX: 1, // these are the x and y on the background array
     arrayY: 24
 };
 
@@ -58,28 +58,28 @@ let mapHeight = mapRows * tileSize;
 let mapWidth = mapCols * tileSize;
 let mapArray = [[182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
    [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [198, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 219],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 235],
+    [198, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 203],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
     [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [198, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 219],
-    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 235],
+    [198, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 203],
+    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
     [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 153, 104, 104, 104, 104, 104, 153, 153, 153, 105, 127, 203],
-    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 219],
-    [198, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 235],
+    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
+    [198, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 203],
     [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 235],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
     [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 219],
-    [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
-    [198, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 219],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 235],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 219],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 235],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 187],
+    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+    [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
+    [198, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 203],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 203],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 203],
     [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
-    [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 219],
-    [198, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 235],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+    [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+    [198, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
     [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251]]
 
 
@@ -232,107 +232,6 @@ function deactivate(event) {
     }
 }
 
-// let movesY = 0;
-// let movesX = 0;
-// function move() {
-//     let speed = 8; // Adjust this value as needed for the desired speed
-//     if (moveUp || moveDown || moveLeft || moveRight) {
-//         let newX = character.x;
-//         let newY = character.y;
-
-//         if (moveUp) {
-//             newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
-//             if (movesY == 4){ // character moved up 5 times and now its on a new tile
-//                 if (character.arrayY > 0 && character.arrayY < 25) {
-//                     // Update character.arrayX if within bounds
-//                     character.arrayY -= 1;
-//                 }
-//                 movesY = 0;
-//             }
-//             else{
-//                 if (movesY<(tileSize/speed)){ // he is is still on the same tile
-//                     movesY+=1;
-//                 }
-//             }
-//         }
-//         if (moveDown) {
-//             newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
-//             if (movesY == 0){ // character moved down 5 times and now its on a new tile
-//                 if (character.arrayY >= 0 && character.arrayY < 25) {
-//                     // Update character.arrayX if within bounds
-//                     character.arrayY += 1;
-//                 }
-//                 movesY = 4; // it's 4 because not its on the top of the tile under it
-//             }
-//             else{
-//                 movesY -=1;
-//             }
-//         }
-//         if (moveLeft) {
-//             newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
-//             if (movesX == 0){ // character moved left 5 times and now its on a new tile
-//                 if (character.arrayX > 0 && character.arrayX <= 25) {
-//                     // Update character.arrayX if within bounds
-//                     character.arrayX -= 1;
-//                 }
-//                 movesX = 4;
-//             }
-//             else{
-//                 if (movesX<(tileSize/speed)){ // he is is still on the same tile
-//                     movesX-=1;
-//                 }
-//             }
-//         }
-//         if (moveRight) {
-//             newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
-//             if (movesX == 4){ // character moved right 5 times and now its on a new tile
-//                 if (character.arrayX >= 0 && character.arrayX < 25) {
-//                     // Update character.arrayX if within bounds
-//                     character.arrayX += 1;
-//                 }
-//                 movesX = 0;
-//             }
-//             else{
-//                 movesX += 1;
-//             }
-//         }
-//         console.log(character.arrayX) // x and y are great but the array x and y are not
-//         console.log(character.arrayY)
-//         console.log(mapArray[character.arrayY][character.arrayX])
-//         // checking for arrayX or arrayY for colliding with walls
-//         if (characterHitsWall(character.arrayX, character.arrayY)){
-//             return;
-//         }
-
-//         /*
-//         // Check for collision with objects (walls, enemies, items)
-//         if (checkCollisionWithObjects(character, arrow)){
-//             // remove arrow and from the above I wrote it so I don't see errors for now
-//             // Collision detected, do not update character's position
-//             return;
-//         }
-//         */
-
-//         // Update character position
-//         character.x = newX;
-//         character.y = newY;
-
-//         // Update character frame based on movement
-//         if (moveUp) {
-//             character.frameY = 3;
-//         } else if (moveDown) {
-//             character.frameY = 0;
-//         } else if (moveLeft) {
-//             character.frameY = 1;
-//         } else if (moveRight) {
-//             character.frameY = 2;
-//         }
-
-//         character.frameX = (character.frameX + 1) % 4;
-//     } else {
-//         character.frameX = 0;
-//     }
-// }
 function move() {
     let speed = 8; // Adjust this value as needed for the desired speed
 
@@ -356,17 +255,12 @@ function move() {
         // Character's x and y position to array indices (1 to 24) so we can check for wall or item collision
         if (moveLeft || moveDown) {
             // Subtract 1 from the calculated array index to collide with walls before being on top of them
-            character.arrayX = Math.max(1, Math.min(Math.floor((newX + character.width / 4) / tileSize), 24)); 
+            character.arrayX = Math.max(0, Math.min(Math.floor((newX + character.width / 4) / tileSize), 24));  // divide by 4 instead of 2 so it doesn't go on to of a wall
             character.arrayY = Math.max(1, Math.min(Math.floor((newY + character.height) / tileSize), 24));
         } else {
             character.arrayX = Math.max(1, Math.min(Math.floor(newX / tileSize) + 1, 24)); 
             character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
         }
-
-        console.log(character.arrayX);
-        console.log(character.arrayY);
-
-        console.log(mapArray[character.arrayY][character.arrayX]);
 
         // Checking for arrayX or arrayY for colliding with walls
         if (objectHitsWall(character.arrayX, character.arrayY)) {
@@ -445,8 +339,9 @@ function attack() {
 }
 
 function objectHitsWall(arrayX, arrayY){
-    if (mapArray[arrayY][arrayX] === 105 || mapArray[arrayY][arrayX] === 104 || mapArray[arrayY][arrayX] === 247 || mapArray[arrayY][arrayX] === 186 || mapArray[arrayY][arrayX] === 103){
-        return true;
+    let walls = [198, 105, 104, 107, 182, 203, 252, 298, 246, 247, 186, 103]
+    if (walls.includes(mapArray[arrayY][arrayX])){
+        return true;                    
     }
     else{
         return false;
