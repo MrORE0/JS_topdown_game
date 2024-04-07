@@ -3,7 +3,7 @@ let CANVAS_WIDTH;
 let CANVAS_HEIGHT;
 let canvas
 
-let fpsInterval = 1000 / 5; //denominator is fps
+let fpsInterval = 1000 / 20; //denominator is fps
 let now;
 let then = Date.now();
 
@@ -176,17 +176,30 @@ function move() {
         let newX = character.x;
         let newY = character.y;
 
-        if (moveUp) {
-            newY = Math.max(character.y - speed, 0); // Ensure character doesn't move above the canvas
-        }
-        if (moveDown) {
-            newY = Math.min(character.y + speed, CANVAS_HEIGHT - (character.height + 10)); // Ensure character doesn't move below the canvas
-        }
-        if (moveLeft) {
-            newX = Math.max(character.x - speed, 0); // Ensure character doesn't move left of the canvas
-        }
-        if (moveRight) {
-            newX = Math.min(character.x + speed, CANVAS_WIDTH - character.width); // Ensure character doesn't move right of the canvas
+        // Calculate diagonal speed using Pythagorean theorem
+        let diagonalSpeed = speed / Math.sqrt(2);
+
+        // Update character's position based on movement flags
+        if (moveUp && moveLeft) {
+            newX -= diagonalSpeed;
+            newY -= diagonalSpeed;
+        } else if (moveUp && moveRight) {
+            newX += diagonalSpeed;
+            newY -= diagonalSpeed;
+        } else if (moveDown && moveLeft) {
+            newX -= diagonalSpeed;
+            newY += diagonalSpeed;
+        } else if (moveDown && moveRight) {
+            newX += diagonalSpeed;
+            newY += diagonalSpeed;
+        } else if (moveUp) {
+            newY -= speed;
+        } else if (moveDown) {
+            newY += speed;
+        } else if (moveLeft) {
+            newX -= speed;
+        } else if (moveRight) {
+            newX += speed;
         }
 
         // Character's x and y position to array indices (1 to 24) so we can check for wall or item collision
@@ -199,9 +212,9 @@ function move() {
             character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
         }
 
-        // Checking for arrayX or arrayY for colliding with walls
-        if (objectHitsWall(character.arrayX, character.arrayY)) {
-            return;
+       // Checking for arrayX or arrayY for colliding with walls
+       if (objectHitsWall(character.arrayX, character.arrayY)) {
+        return;
         }
 
         // Update character position
@@ -224,6 +237,7 @@ function move() {
         character.frameX = 0;
     }
 }
+
 
 function attack() {
     // Define arrow speed
@@ -251,7 +265,7 @@ function attack() {
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
-        ctx.translate(character.x + character.width / 2.4, character.y + character.height); // division by 2.4 because this actually is the center
+        ctx.translate(character.x + character.width / 2, character.y + character.height); // division by 2.4 because this actually is the center
         arrow.rotation = Math.PI;
         ctx.rotate(arrow.rotation); // rotate arrow 180 degrees clockwise
 
