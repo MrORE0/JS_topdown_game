@@ -18,6 +18,13 @@ let arrow = {
     arrayX: 0,
     arrayY: 0
 }
+// Define hitbox properties separately after the arrow object is fully initialized
+arrow.hitbox = {
+    x: arrow.x + arrow.width/2, // hitbox x-coordinate relative to character
+    y: arrow.y + arrow.height/2, // hitbox y-coordinate relative to character
+    width: arrow.width/2, // hitbox width
+    height: arrow.height/1.5 // hitbox height
+};
 let arrow_image = new Image();
 let arrow_alive = false;
 
@@ -136,15 +143,11 @@ function draw() {
         reDrawingArrow();
     }
 
-    // checking where the x and y of the arrow are
-    ctx.fillStyle = 'red';
-    ctx.fillRect(character.x, character.y, 5, 5);
-
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(arrow.x, arrow.y, 5, 5);
-
     ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'
     ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
+
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'
+    ctx.fillRect(arrow.hitbox.x, arrow.hitbox.y, arrow.hitbox.width, arrow.hitbox.height);
     
 }
 
@@ -371,6 +374,12 @@ function reDrawingArrow() {
             // Draw the arrow based on its direction of movement
             if (arrow.xChange < 0) { // Arrow goes left
                 ctx.drawImage(arrow_image, -arrow.height, 0, arrow.height, arrow.width);
+
+                //setting arrow hitbox
+                arrow.hitbox.x = arrow.x + arrow.width/5;
+                arrow.hitbox.y = arrow.y + arrow.height/4;
+                arrow.hitbox.width = arrow.width*2; // hitbox width
+                arrow.hitbox.height = arrow.height/2;
             } else if (arrow.xChange > 0) { // Arrow goes right
                 ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
             } else if (arrow.yChange < 0) { // Arrow goes up
@@ -385,6 +394,11 @@ function reDrawingArrow() {
             // Update the arrow's array indices
             arrow.arrayX = newArrayX;
             arrow.arrayY = newArrayY;
+
+            //setting arrow hitbox
+            arrow.hitbox.x = arrow.x + arrow.width/4.2;
+            arrow.hitbox.y = arrow.y + arrow.height/4;
+            arrow.hitbox.width = arrow.width/2; // hitbox width
         } else {
             resetArrow();
         }
