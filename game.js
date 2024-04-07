@@ -331,46 +331,45 @@ function reDrawingArrow() {
     newArrayX = Math.max(1, Math.min(Math.floor((arrow.x + arrow.width / 2) / tileSize), 24)); 
     newArrayY = Math.max(1, Math.min(Math.floor((arrow.y + arrow.height / 2) / tileSize), 24));
 
-    if (!objectHitsWall(newArrayX, newArrayY)) {
-        // Update arrow position based on its speed
-        arrow.x += arrow.xChange || 0;
-        arrow.y += arrow.yChange || 0;
-
-        // Save the current canvas state
-        ctx.save();
-
-        // Translate to the arrow's position
-        ctx.translate(arrow.x, arrow.y);
-
-        // Rotate the canvas based on the arrow's rotation angle
-        ctx.rotate(arrow.rotation);
-
-        // Draw the arrow based on its direction of movement
-        if (arrow.xChange < 0) { // Arrow goes left
-            ctx.drawImage(arrow_image, -arrow.height, 0, arrow.height, arrow.width);
-        } else if (arrow.xChange > 0) { // Arrow goes right
-            ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
-        } else if (arrow.yChange < 0) { // Arrow goes up
-            ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
-        } else { // Arrow goes down
-            ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
+    if (30 < arrow.x && arrow.x < 770 && 30 < arrow.y && arrow.y < 800) {
+        if (!objectHitsWall(newArrayX, newArrayY)) {
+            // Update arrow position based on its speed
+            arrow.x += arrow.xChange || 0;
+            arrow.y += arrow.yChange || 0;
+    
+            // Save the current canvas state
+            ctx.save();
+    
+            // Translate to the arrow's position
+            ctx.translate(arrow.x, arrow.y);
+    
+            // Rotate the canvas based on the arrow's rotation angle
+            ctx.rotate(arrow.rotation);
+    
+            // Draw the arrow based on its direction of movement
+            if (arrow.xChange < 0) { // Arrow goes left
+                ctx.drawImage(arrow_image, -arrow.height, 0, arrow.height, arrow.width);
+            } else if (arrow.xChange > 0) { // Arrow goes right
+                ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
+            } else if (arrow.yChange < 0) { // Arrow goes up
+                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
+            } else { // Arrow goes down
+                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
+            }
+    
+            // Restore the canvas state
+            ctx.restore();
+            
+            // Update the arrow's array indices
+            arrow.arrayX = newArrayX;
+            arrow.arrayY = newArrayY;
+        } else {
+            resetArrow();
         }
-
-        // Restore the canvas state
-        ctx.restore();
-        
-        // Update the arrow's array indices
-        arrow.arrayX = newArrayX;
-        arrow.arrayY = newArrayY;
-    } else {
-        arrow_alive = false;
-        arrow.xChange = 0;
-        arrow.yChange = 0;
-        arrow.height = 16;
-        arrow.width = 7;
-        arrow.x = 0;
-        arrow.y = 0;
+    }else{
+        resetArrow();
     }
+    
 }
 
 function objectHitsWall(arrayX, arrayY){
@@ -480,4 +479,14 @@ function drawBackground(){
             mapIndex++;
         }
     }
+}
+
+function resetArrow(){
+    arrow_alive = false;
+    arrow.xChange = 0;
+    arrow.yChange = 0;
+    arrow.height = 16;
+    arrow.width = 7;
+    arrow.x = 0;
+    arrow.y = 0;
 }
