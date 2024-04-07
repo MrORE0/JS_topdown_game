@@ -243,6 +243,7 @@ function attack() {
         arrow.width = temp; // 16
         ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width); // its 0 and 0 due to the translation above
         ctx.restore();
+
         // setting new x and y for the arrow
         arrow.x = character.x + character.width; // on the pointy of the arrow
         arrow.y = character.y + character.height/2;
@@ -250,14 +251,19 @@ function attack() {
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
-        ctx.translate(character.x + character.width / 2, character.y + character.height);
-        ctx.rotate(Math.PI);
-        ctx.drawImage(arrow_image, -arrow.height / 5, -arrow.width * 2, arrow.width, arrow.height);
-        ctx.restore();
-        arrow.x = character.x + character.width / 2 - arrow.height / 5;
-        arrow.y = character.y + character.height - arrow.width * 2;
-        arrow.yChange = arrowSpeed;
+        ctx.translate(character.x + character.width / 2.4, character.y + character.height);
         arrow.rotation = Math.PI;
+        ctx.rotate(arrow.rotation); // rotate arrow 180 degrees clockwise
+
+        // width and height stay the same
+        ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height);
+        ctx.restore();
+
+        // setting new x and y for the arrow
+        arrow.x = character.x + character.width / 2.4; 
+        arrow.y = character.y + character.height;
+        arrow.yChange = arrowSpeed;
+
     } else if (character.frameY === 3) {
        // Character is facing up
        ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y - arrow.height / 2, arrow.width, arrow.height);
