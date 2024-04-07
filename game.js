@@ -241,10 +241,10 @@ function attack() {
         let temp = arrow.height;
         arrow.height = arrow.width; // 7
         arrow.width = temp; // 16
-        ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height); // its 0 and 0 due to the translation above
+        ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width); // its 0 and 0 due to the translation above
         ctx.restore();
         // setting new x and y for the arrow
-        arrow.x = character.x + character.width + arrow.width; // on the pointy of the arrow
+        arrow.x = character.x + character.width; // on the pointy of the arrow
         arrow.y = character.y + character.height/2;
         arrow.xChange = arrowSpeed;
     } else if (character.frameY === 0) {
@@ -278,6 +278,9 @@ function attack() {
         arrow.rotation = -Math.PI / 2;
     }
     arrow_alive = true;
+
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(arrow.x, arrow.y, 5, 5);
 
     // Set array x and y for the arrow based on its starting position
     arrow.arrayX = character.arrayX;
