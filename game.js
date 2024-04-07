@@ -29,7 +29,14 @@ let character = {
     xChange : 0,
     yChange : 0,
     arrayX: 1, // these are the x and y on the background array
-    arrayY: 24
+    arrayY: 24,
+};
+// Define hitbox properties separately after the character object is fully initialized
+character.hitbox = {
+    x: character.x + character.width/2, // hitbox x-coordinate relative to character
+    y: character.y + character.height/2, // hitbox y-coordinate relative to character
+    width: character.width/2, // hitbox width
+    height: character.height/1.5 // hitbox height
 };
 
 let sprite_size = 96;
@@ -135,6 +142,9 @@ function draw() {
 
     ctx.fillStyle = 'blue';
     ctx.fillRect(arrow.x, arrow.y, 5, 5);
+
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'
+    ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
     
 }
 
@@ -151,7 +161,7 @@ function activate(event) {
     }
     if (key === " "){
         if (arrow_alive == false){
-            attack()
+            spawnArrow()
         }
     }
 }
@@ -221,6 +231,19 @@ function move() {
         character.x = newX;
         character.y = newY;
 
+        // Update the hitbox
+        if (moveDown || moveUp){
+            character.hitbox.x = newX + character.width/4.2;
+            character.hitbox.y = newY + character.height/4;
+            character.hitbox.width = character.width/2; // hitbox width
+        }
+        else{
+            character.hitbox.x = newX + character.width/3;
+            character.hitbox.y = newY + character.height/4;
+            // has to have smaller width 
+            character.hitbox.width = character.width/3; // hitbox width
+        }
+
         // Update character frame based on movement
         if (moveUp) {
             character.frameY = 3;
@@ -238,7 +261,7 @@ function move() {
     }
 }
 
-function attack() {
+function spawnArrow() {
     // Define arrow speed
     let arrowSpeed = 10;
 
