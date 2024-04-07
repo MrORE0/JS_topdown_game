@@ -278,14 +278,21 @@ function attack() {
     } else if (character.frameY === 1) {
         // Character is facing left
         ctx.save();
-        ctx.translate(character.x, character.y + character.height / 2);
-        ctx.rotate(-Math.PI / 2); 
-        ctx.drawImage(arrow_image, -arrow.height / 2, -arrow.width, arrow.width, arrow.height);
-        ctx.restore();
-        arrow.x = character.x - arrow.height / 2;
-        arrow.y = character.y + character.height / 2 - arrow.width;
-        arrow.xChange = -arrowSpeed;
+        ctx.translate(character.x, character.y + character.height/1.5);
         arrow.rotation = -Math.PI / 2;
+        ctx.rotate(arrow.rotation); // Rotate arrow 270 degrees clockwise
+
+        // switching values according to the orientation
+        let temp = arrow.height;
+        arrow.height = arrow.width; // 7
+        arrow.width = temp; // 16
+        ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
+        ctx.restore();
+
+        //setting new x and y for the arrow
+        arrow.x = character.x - arrow.height / 2;
+        arrow.y = character.y + character.height / 2;
+        arrow.xChange = -arrowSpeed;
     }
     arrow_alive = true;
 
