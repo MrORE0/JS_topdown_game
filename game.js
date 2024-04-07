@@ -347,9 +347,9 @@ function reDrawingArrow() {
 
         // Draw the arrow based on its direction of movement
         if (arrow.xChange < 0) { // Arrow goes left
-            ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
+            ctx.drawImage(arrow_image, -arrow.height, 0, arrow.height, arrow.width);
         } else if (arrow.xChange > 0) { // Arrow goes right
-            ctx.drawImage(arrow_image, arrow.x, arrow.y, arrow.width, arrow.height);
+            ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
         } else if (arrow.yChange < 0) { // Arrow goes up
             ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
         } else { // Arrow goes down
@@ -366,6 +366,10 @@ function reDrawingArrow() {
         arrow_alive = false;
         arrow.xChange = 0;
         arrow.yChange = 0;
+        arrow.height = 16;
+        arrow.width = 7;
+        arrow.x = 0;
+        arrow.y = 0;
     }
 }
 
