@@ -238,7 +238,6 @@ function move() {
     }
 }
 
-
 function attack() {
     // Define arrow speed
     let arrowSpeed = 10;
@@ -372,6 +371,16 @@ function reDrawingArrow() {
     
 }
 
+function resetArrow(){
+    arrow_alive = false;
+    arrow.xChange = 0;
+    arrow.yChange = 0;
+    arrow.height = 16;
+    arrow.width = 7;
+    arrow.x = 0;
+    arrow.y = 0;
+}
+
 function objectHitsWall(arrayX, arrayY){
     let walls = [198, 105, 104, 107, 182, 203, 252, 298, 246, 247, 186, 103]
     if (walls.includes(mapArray[arrayY][arrayX])){
@@ -481,12 +490,3 @@ function drawBackground(){
     }
 }
 
-function resetArrow(){
-    arrow_alive = false;
-    arrow.xChange = 0;
-    arrow.yChange = 0;
-    arrow.height = 16;
-    arrow.width = 7;
-    arrow.x = 0;
-    arrow.y = 0;
-}
