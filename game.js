@@ -3,7 +3,7 @@ let CANVAS_WIDTH;
 let CANVAS_HEIGHT;
 let canvas
 
-let fpsInterval = 1000 / 20; //denominator is fps
+let fpsInterval = 1000 / 5; //denominator is fps
 let now;
 let then = Date.now();
 
@@ -14,7 +14,9 @@ let arrow = {
     height : 16,
     xChange : 0,
     yChange : 0,
-    rotation : 0
+    rotation : 0,
+    arrayX: 0,
+    arrayY: 0
 }
 let arrow_image = new Image();
 let arrow_alive = false;
@@ -34,6 +36,7 @@ let sprite_size = 96;
 let playerImage = new Image();
 let light;
 
+// boolean values for keeping track of movement
 let moveUp = false;
 let moveDown = false;
 let moveLeft = false;
@@ -122,7 +125,17 @@ function draw() {
     ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
 
     // if arrow was shot this will animate it(redraw it)
-    reDrawingArrow();
+    if (arrow_alive){
+        reDrawingArrow();
+    }
+
+    // checking where the x and y of the arrow are
+    ctx.fillStyle = 'red';
+    ctx.fillRect(character.x, character.y, 5, 5);
+
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(arrow.x, arrow.y, 5, 5);
+    
 }
 
 function activate(event) {
@@ -215,27 +228,34 @@ function move() {
 function attack() {
     // Define arrow speed
     let arrowSpeed = 10;
+
     // Rotate and draw the arrow based on the character's facing direction
     if (character.frameY === 2) {
         // Character is facing right
         ctx.save();
-        ctx.translate(character.x + character.width / 2, character.y + character.height);
-        ctx.rotate(Math.PI / 2); // Rotate arrow 90 degrees clockwise
-        ctx.drawImage(arrow_image, -arrow.height*1.5, -arrow.width*4, arrow.width, arrow.height);
-        ctx.restore();
-        arrow.x = character.x + character.width / 2 - arrow.height*1.5;
-        arrow.y = character.y + character.height - arrow.width*4;
-        arrow.xChange = arrowSpeed;
+        ctx.translate(character.x + character.width, character.y + character.height/2);
         arrow.rotation = Math.PI / 2;
+        ctx.rotate(arrow.rotation); // Rotate arrow 90 degrees clockwise
+
+        // switching values according to the orientation
+        let temp = arrow.height;
+        arrow.height = arrow.width; // 7
+        arrow.width = temp; // 16
+        ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height); // its 0 and 0 due to the translation above
+        ctx.restore();
+        // setting new x and y for the arrow
+        arrow.x = character.x + character.width + arrow.width; // on the pointy of the arrow
+        arrow.y = character.y + character.height/2;
+        arrow.xChange = arrowSpeed;
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
         ctx.translate(character.x + character.width / 2, character.y + character.height);
         ctx.rotate(Math.PI);
-        ctx.drawImage(arrow_image, -arrow.height / 5, -arrow.width*2, arrow.width, arrow.height);
+        ctx.drawImage(arrow_image, -arrow.height / 5, -arrow.width * 2, arrow.width, arrow.height);
         ctx.restore();
         arrow.x = character.x + character.width / 2 - arrow.height / 5;
-        arrow.y = character.y + character.height - arrow.width*2;
+        arrow.y = character.y + character.height - arrow.width * 2;
         arrow.yChange = arrowSpeed;
         arrow.rotation = Math.PI;
     } else if (character.frameY === 3) {
@@ -244,7 +264,7 @@ function attack() {
        arrow.x = character.x + character.width / 2.4;
        arrow.y = character.y - arrow.height / 2;
        arrow.yChange = -arrowSpeed;
-       arrow.rotation = 0
+       arrow.rotation = 0;
     } else if (character.frameY === 1) {
         // Character is facing left
         ctx.save();
@@ -258,51 +278,60 @@ function attack() {
         arrow.rotation = -Math.PI / 2;
     }
     arrow_alive = true;
+
+    // Set array x and y for the arrow based on its starting position
+    arrow.arrayX = character.arrayX;
+    arrow.arrayY = character.arrayY;
 }
 
-function reDrawingArrow(){
-    // Draw arrow if it's alive
-    if (arrow_alive) {
+function reDrawingArrow() {
+    console.log("character X"+character.arrayX);
+    console.log("character Y"+character.arrayY);
+    console.log("arrow X"+arrow.arrayX);
+    console.log("arrow Y"+arrow.arrayY);
+    
+    // Define the new array indices based on the arrow's direction of movement
+    let newArrayX = arrow.arrayX;
+    let newArrayY = arrow.arrayY;
+    
+    newArrayX = Math.max(1, Math.min(Math.floor((arrow.x + arrow.width / 2) / tileSize), 24)); 
+    newArrayY = Math.max(1, Math.min(Math.floor((arrow.y + arrow.height / 2) / tileSize), 24));
+
+    if (!objectHitsWall(newArrayX, newArrayY)) {
         // Update arrow position based on its speed
         arrow.x += arrow.xChange || 0;
         arrow.y += arrow.yChange || 0;
 
-        // Check for collision with canvas border
-        if (checkCanvasCollision(arrow)) {
-            // Handle collision with canvas border
-            arrow_alive = false; // Set arrow_alive to false or handle as required
-            arrow.xChange = 0;
-            arrow.yChange = 0;
-        } else {
-            // Save the current canvas state
-            ctx.save();
+        // Save the current canvas state
+        ctx.save();
 
-            // Translate to the arrow's position
-            ctx.translate(arrow.x, arrow.y);
+        // Translate to the arrow's position
+        ctx.translate(arrow.x, arrow.y);
 
-            // Rotate the canvas based on the arrow's rotation angle
-            ctx.rotate(arrow.rotation);
+        // Rotate the canvas based on the arrow's rotation angle
+        ctx.rotate(arrow.rotation);
 
-            // Draw the arrow
-            //arrow goes left
-            if (arrow.xChange < 0 ){
-                ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            //arrow goes right
-            else if (arrow.xChange > 0 ){
-                ctx.drawImage(arrow_image, -arrow.width/80, -arrow.height*3, arrow.width, arrow.height);
-            }
-            //arrow goes down
-            else if (arrow.yChange > 0 ){
-                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            //arrow goes up
-            else{
-                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
-            }
-            // Restore the canvas state
-            ctx.restore();
+        // Draw the arrow based on its direction of movement
+        if (arrow.xChange < 0) { // Arrow goes left
+            ctx.drawImage(arrow_image, -arrow.width * 2, -arrow.height / 2, arrow.width, arrow.height);
+        } else if (arrow.xChange > 0) { // Arrow goes right
+            ctx.drawImage(arrow_image, arrow.x, arrow.y, arrow.width, arrow.height);
+        } else if (arrow.yChange < 0) { // Arrow goes up
+            ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
+        } else { // Arrow goes down
+            ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
         }
+
+        // Restore the canvas state
+        ctx.restore();
+        
+        // Update the arrow's array indices
+        arrow.arrayX = newArrayX;
+        arrow.arrayY = newArrayY;
+    } else {
+        arrow_alive = false;
+        arrow.xChange = 0;
+        arrow.yChange = 0;
     }
 }
 
