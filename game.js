@@ -417,16 +417,6 @@ function checkCollisionWithObjects(object1, object2) {
     }
 }
 
-function checkCanvasCollision(object) {
-    //checking all the walls for collision, if one is true, returns true and otherwise false
-    return (
-        object.x < 0 || // Left border
-        object.x + object.width > CANVAS_WIDTH || // Right border
-        object.y < 0 || // Top border
-        object.y + object.height > CANVAS_HEIGHT // Bottom border
-    );
-}
-
 function load_assets(assets, callback){
     let num_assets = assets.length;
     let loaded = function(){
@@ -489,4 +479,3 @@ function drawBackground(){
         }
     }
 }
-
