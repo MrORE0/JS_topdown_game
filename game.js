@@ -251,7 +251,7 @@ function attack() {
     } else if (character.frameY === 0) {
         // Character is facing down
         ctx.save();
-        ctx.translate(character.x + character.width / 2.4, character.y + character.height);
+        ctx.translate(character.x + character.width / 2.4, character.y + character.height); // division by 2.4 because this actually is the center
         arrow.rotation = Math.PI;
         ctx.rotate(arrow.rotation); // rotate arrow 180 degrees clockwise
 
@@ -260,17 +260,21 @@ function attack() {
         ctx.restore();
 
         // setting new x and y for the arrow
-        arrow.x = character.x + character.width / 2.4; 
+        arrow.x = character.x + character.width / 2.4; // division by 2.4 because this actually is the center
         arrow.y = character.y + character.height;
         arrow.yChange = arrowSpeed;
 
     } else if (character.frameY === 3) {
        // Character is facing up
-       ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y - arrow.height / 2, arrow.width, arrow.height);
-       arrow.x = character.x + character.width / 2.4;
-       arrow.y = character.y - arrow.height / 2;
-       arrow.yChange = -arrowSpeed;
        arrow.rotation = 0;
+       // by default it faces up so no translation needed
+       ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y, arrow.width, arrow.height); // division by 2.4 because this actually is the center
+       
+       // setting new x and y for the arrow
+       arrow.x = character.x + character.width / 2.4; // division by 2.4 because this actually is the center
+       arrow.y = character.y;
+       arrow.yChange = -arrowSpeed;
+       
     } else if (character.frameY === 1) {
         // Character is facing left
         ctx.save();
