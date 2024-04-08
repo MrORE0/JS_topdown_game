@@ -1,54 +1,46 @@
+import { Bullet } from "./bullet.js";
+import { Character, Entity } from "./entity.js";
+import { drawBackground, drawCreature } from "./assets.js";
+
 let ctx; //thats context
 let CANVAS_WIDTH;
 let CANVAS_HEIGHT;
-let canvas
+let canvas;
 
 let fpsInterval = 1000 / 20; //denominator is fps
 let now;
 let then = Date.now();
 
-let arrow = {
-    x : 0,
-    y : 0,
-    width : 7,
-    height : 16,
-    xChange : 0,
-    yChange : 0,
-    rotation : 0,
-    arrayX: 0,
-    arrayY: 0
-}
-// Define hitbox properties separately after the arrow object is fully initialized
-arrow.hitbox = {
-    x: arrow.x + arrow.width/2, // hitbox x-coordinate relative to character
-    y: arrow.y + arrow.height/2, // hitbox y-coordinate relative to character
-    width: arrow.width/2, // hitbox width
-    height: arrow.height/1.5 // hitbox height
-};
-let arrow_image = new Image();
-let arrow_alive = false;
-
 let character = {
-    x : 0,
-    y : 0,
-    width : 49,
-    height : 49,
-    xChange : 0,
-    yChange : 0,
-    arrayX: 1, // these are the x and y on the background array
-    arrayY: 24,
+  x: 30,
+  y: 70,
+  width: 49,
+  height: 49,
+  frameX: 0,
+  frameY: 0,
+  arrayX: 1, // these are the x and y on the background array
+  arrayY: 24,
+  speed: 10,
+  spritePath: "./static/character.png",
 };
-// Define hitbox properties separately after the character object is fully initialized
-character.hitbox = {
-    x: character.x + character.width/2, // hitbox x-coordinate relative to character
-    y: character.y + character.height/2, // hitbox y-coordinate relative to character
-    width: character.width/2, // hitbox width
-    height: character.height/1.5 // hitbox height
-};
+let newCharacter = new Character(character, true, 32);
 
+let arrow = {
+  x: 0,
+  y: 0,
+  width: 7,
+  height: 16,
+  xChange: 0,
+  yChange: 0,
+  arrayX: 0,
+  arrayY: 0,
+  speed: 10,
+  sprite: "./static/arrow.png",
+};
+let newArrow = new Bullet(arrow, false, 32, character);
+
+// idk if I need it
 let sprite_size = 96;
-let playerImage = new Image();
-let light;
 
 // boolean values for keeping track of movement
 let moveUp = false;
@@ -56,463 +48,109 @@ let moveDown = false;
 let moveLeft = false;
 let moveRight = false;
 
-// learning to make the tilemap 
-// https://medium.com/geekculture/make-your-own-tile-map-with-vanilla-javascript-a627de67b7d9
-let background = [];
-let backgroundImage = new Image();
-let tileSize = 32;
-let tileOutputSize = 1;
-let updatedTileSize = tileSize * tileOutputSize;
-let tileAtlas = new Image();
-tileAtlas.src = "static/Dungeon_Tileset_at.png";
-
-// atlas is the tileset is used to make the map
-let atlasCol = 16;
-let atlasRow = 16;
-let mapCols = 25;
-let mapRows = 25;
-let mapHeight = mapRows * tileSize;
-let mapWidth = mapCols * tileSize;
-let mapArray = [[182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
-   [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [198, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 203],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
-    [198, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 203],
-    [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
-    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 153, 104, 104, 104, 104, 104, 153, 153, 153, 105, 127, 203],
-    [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
-    [198, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 203],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
-    [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
-    [198, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 203],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 203],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 203],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
-    [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
-    [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
-    [198, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
-    [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251]]
-
+let mapArray = [
+  [182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
+  [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+  [198, 153, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 231, 153, 203],
+  [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+  [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
+  [198, 153, 105, 153, 105, 148, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104, 104, 105, 104, 104, 153, 203],
+  [198, 153, 105, 153, 105, 104, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
+  [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 153, 104, 104, 104, 104, 104, 153, 153, 153, 105, 127, 203],
+  [198, 153, 105, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 203],
+  [198, 153, 105, 153, 105, 104, 104, 104, 103, 104, 104, 104, 104, 104, 104, 104, 103, 104, 104, 104, 104, 104, 105, 153, 203],
+  [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+  [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+  [198, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+  [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+  [198, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 203],
+  [198, 153, 153, 104, 104, 104, 104, 153, 104, 104, 104, 103, 104, 104, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
+  [198, 153, 153, 105, 126, 153, 105, 153, 153, 153, 153, 153, 153, 105, 210, 104, 104, 104, 104, 104, 104, 104, 104, 104, 203],
+  [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 143, 153, 153, 153, 153, 153, 153, 203],
+  [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 104, 103, 104, 104, 104, 203],
+  [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+  [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+  [198, 153, 153, 105, 153, 153, 105, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+  [198, 153, 231, 105, 153, 153, 105, 153, 148, 104, 104, 104, 104, 105, 153, 153, 153, 153, 153, 105, 153, 153, 105, 153, 203],
+  [198, 211, 153, 105, 153, 153, 153, 153, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 203],
+  [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251],
+];
 
 document.addEventListener("DOMContentLoaded", startGame, false);
 
-function startGame(){
-    canvas = document.querySelector("canvas");
-    ctx = canvas.getContext("2d");
-    character.x = 30;
-    character.y = 700;
-    CANVAS_WIDTH = canvas.width;
-    CANVAS_HEIGHT = canvas.height;
+function startGame() {
+  canvas = document.querySelector("canvas");
+  ctx = canvas.getContext("2d");
+  CANVAS_WIDTH = canvas.width;
+  CANVAS_HEIGHT = canvas.height;
 
-    window.addEventListener("keydown", activate, false);
-    window.addEventListener("keyup", deactivate, false);
-
-    load_assets([{"var": playerImage, "url": "static/character.png"},
-    {"var": backgroundImage, "url": "static/Dungeon_Tileset_at.png"}, {"var": arrow_image, "url": "static/arrow.png"}], draw);
+  window.addEventListener("keydown", activate, false);
+  window.addEventListener("keyup", deactivate, false);
+  runGame();
 }
 
-function draw() {
-    window.requestAnimationFrame(draw);
-    let now = Date.now();
-    let elapsed = now - then;
-    if (elapsed <= fpsInterval) {
-        return;
-    }
-    then = now - (elapsed % fpsInterval);
+function runGame() {
+  window.requestAnimationFrame(runGame);
+  let now = Date.now();
+  let elapsed = now - then;
+  if (elapsed <= fpsInterval) {
+    return;
+  }
+  then = now - (elapsed % fpsInterval);
 
-    // Move character based on movement flags
-    move();
+  // Move character based on movement flags
+  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray);
 
-    // Clear the canvas
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  // Clear the canvas
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  // Draw the background and the walls
+  const tileAtlasPath = "static/Dungeon_Tileset_at.png";
+  drawBackground(ctx, tileAtlasPath, mapArray);
 
-    // Draw the background and the walls
-    drawBackground();
+  // Draw character
+  drawCreature(ctx, newCharacter);
 
-    // Draw character
-    ctx.drawImage(playerImage, character.frameX * character.width, character.frameY * character.height, character.width, character.height, character.x, character.y, character.width, character.height);
+  // if arrow was shot this will animate it(redraw it)
+  if (newArrow.alive === true) {
+    newArrow.redrawBullet(ctx, mapArray);
+  }
 
-    // if arrow was shot this will animate it(redraw it)
-    if (arrow_alive){
-        reDrawingArrow();
-    }
+  //   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+  //   ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
 
-    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'
-    ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
-
-    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'
-    ctx.fillRect(arrow.hitbox.x, arrow.hitbox.y, arrow.hitbox.width, arrow.hitbox.height);
-    
+  //   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+  //   console.log("in draw function", arrow.hitbox.x);
+  //   console.log("in draw function", arrow.hitbox.y);
+  //   ctx.fillRect(arrow.hitbox.x, arrow.hitbox.y, arrow.hitbox.width, arrow.hitbox.height);
 }
 
 function activate(event) {
-    let key = event.key;
-    if (key === "ArrowUp") {
-        moveUp = true;
-    } else if (key === "ArrowDown") {
-        moveDown = true;
-    } else if (key === "ArrowLeft") {
-        moveLeft = true;
-    } else if (key === "ArrowRight") {
-        moveRight = true;
+  let key = event.key;
+  if (key === "ArrowUp") {
+    moveUp = true;
+  } else if (key === "ArrowDown") {
+    moveDown = true;
+  } else if (key === "ArrowLeft") {
+    moveLeft = true;
+  } else if (key === "ArrowRight") {
+    moveRight = true;
+  }
+  if (key === " ") {
+    if (arrow.alive === false) {
+      arrow.shoot(ctx, character);
     }
-    if (key === " "){
-        if (arrow_alive == false){
-            spawnArrow()
-        }
-    }
+  }
 }
 
 function deactivate(event) {
-    let key = event.key;
-    if (key === "ArrowUp") {
-        moveUp = false;
-    } else if (key === "ArrowDown") {
-        moveDown = false;
-    } else if (key === "ArrowLeft") {
-        moveLeft = false;
-    } else if (key === "ArrowRight") {
-        moveRight = false;
-    }
-}
-
-function move() {
-    let speed = 8; // Adjust this value as needed for the desired speed
-
-    if (moveUp || moveDown || moveLeft || moveRight) {
-        let newX = character.x;
-        let newY = character.y;
-
-        // Calculate diagonal speed using Pythagorean theorem
-        let diagonalSpeed = speed / Math.sqrt(2);
-
-        // Update character's position based on movement flags
-        if (moveUp && moveLeft) {
-            newX -= diagonalSpeed;
-            newY -= diagonalSpeed;
-        } else if (moveUp && moveRight) {
-            newX += diagonalSpeed;
-            newY -= diagonalSpeed;
-        } else if (moveDown && moveLeft) {
-            newX -= diagonalSpeed;
-            newY += diagonalSpeed;
-        } else if (moveDown && moveRight) {
-            newX += diagonalSpeed;
-            newY += diagonalSpeed;
-        } else if (moveUp) {
-            newY -= speed;
-        } else if (moveDown) {
-            newY += speed;
-        } else if (moveLeft) {
-            newX -= speed;
-        } else if (moveRight) {
-            newX += speed;
-        }
-
-        // Character's x and y position to array indices (1 to 24) so we can check for wall or item collision
-        if (moveLeft || moveDown) {
-            // Subtract 1 from the calculated array index to collide with walls before being on top of them
-            character.arrayX = Math.max(0, Math.min(Math.floor((newX + character.width / 4) / tileSize), 24));  // divide by 4 instead of 2 so it doesn't go on to of a wall
-            character.arrayY = Math.max(1, Math.min(Math.floor((newY + character.height) / tileSize), 24));
-        } else {
-            character.arrayX = Math.max(1, Math.min(Math.floor(newX / tileSize) + 1, 24)); 
-            character.arrayY = Math.max(1, Math.min(Math.floor(newY / tileSize) + 1, 24));
-        }
-
-       // Checking for arrayX or arrayY for colliding with walls
-       if (objectHitsWall(character.arrayX, character.arrayY)) {
-        return;
-        }
-
-        // Update character position
-        character.x = newX;
-        character.y = newY;
-
-        // Update the hitbox
-        if (moveDown || moveUp){
-            character.hitbox.x = newX + character.width/4.2;
-            character.hitbox.y = newY + character.height/4;
-            character.hitbox.width = character.width/2; // hitbox width
-        }
-        else{
-            character.hitbox.x = newX + character.width/3;
-            character.hitbox.y = newY + character.height/4;
-            // has to have smaller width 
-            character.hitbox.width = character.width/3; // hitbox width
-        }
-
-        // Update character frame based on movement
-        if (moveUp) {
-            character.frameY = 3;
-        } else if (moveDown) {
-            character.frameY = 0;
-        } else if (moveLeft) {
-            character.frameY = 1;
-        } else if (moveRight) {
-            character.frameY = 2;
-        }
-
-        character.frameX = (character.frameX + 1) % 4;
-    } else {
-        character.frameX = 0;
-    }
-}
-
-function spawnArrow() {
-    // Define arrow speed
-    let arrowSpeed = 10;
-
-    // Rotate and draw the arrow based on the character's facing direction
-    if (character.frameY === 2) {
-        // Character is facing right
-        ctx.save();
-        ctx.translate(character.x + character.width, character.y + character.height/2);
-        arrow.rotation = Math.PI / 2;
-        ctx.rotate(arrow.rotation); // Rotate arrow 90 degrees clockwise
-
-        // switching values according to the orientation
-        let temp = arrow.height;
-        arrow.height = arrow.width; // 7
-        arrow.width = temp; // 16
-        ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width); // its 0 and 0 due to the translation above
-        ctx.restore();
-
-        // setting new x and y for the arrow
-        arrow.x = character.x + character.width; // on the pointy of the arrow
-        arrow.y = character.y + character.height/2;
-        arrow.xChange = arrowSpeed;
-    } else if (character.frameY === 0) {
-        // Character is facing down
-        ctx.save();
-        ctx.translate(character.x + character.width / 2, character.y + character.height); // division by 2.4 because this actually is the center
-        arrow.rotation = Math.PI;
-        ctx.rotate(arrow.rotation); // rotate arrow 180 degrees clockwise
-
-        // width and height stay the same
-        ctx.drawImage(arrow_image, 0, 0, arrow.width, arrow.height);
-        ctx.restore();
-
-        // setting new x and y for the arrow
-        arrow.x = character.x + character.width / 2.4; // division by 2.4 because this actually is the center
-        arrow.y = character.y + character.height;
-        arrow.yChange = arrowSpeed;
-
-    } else if (character.frameY === 3) {
-       // Character is facing up
-       arrow.rotation = 0;
-       // by default it faces up so no translation needed
-       ctx.drawImage(arrow_image, character.x + character.width / 2.4, character.y, arrow.width, arrow.height); // division by 2.4 because this actually is the center
-       
-       // setting new x and y for the arrow
-       arrow.x = character.x + character.width / 2.4; // division by 2.4 because this actually is the center
-       arrow.y = character.y;
-       arrow.yChange = -arrowSpeed;
-       
-    } else if (character.frameY === 1) {
-        // Character is facing left
-        ctx.save();
-        ctx.translate(character.x, character.y + character.height/1.5);
-        arrow.rotation = -Math.PI / 2;
-        ctx.rotate(arrow.rotation); // Rotate arrow 270 degrees clockwise
-
-        // switching values according to the orientation
-        let temp = arrow.height;
-        arrow.height = arrow.width; // 7
-        arrow.width = temp; // 16
-        ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
-        ctx.restore();
-
-        //setting new x and y for the arrow
-        arrow.x = character.x - arrow.height / 2;
-        arrow.y = character.y + character.height / 2;
-        arrow.xChange = -arrowSpeed;
-    }
-    arrow_alive = true;
-
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(arrow.x, arrow.y, 5, 5);
-
-    // Set array x and y for the arrow based on its starting position
-    arrow.arrayX = character.arrayX;
-    arrow.arrayY = character.arrayY;
-}
-
-function reDrawingArrow() {
-    console.log("character X"+character.arrayX);
-    console.log("character Y"+character.arrayY);
-    console.log("arrow X"+arrow.arrayX);
-    console.log("arrow Y"+arrow.arrayY);
-    
-    // Define the new array indices based on the arrow's direction of movement
-    let newArrayX = arrow.arrayX;
-    let newArrayY = arrow.arrayY;
-    
-    newArrayX = Math.max(1, Math.min(Math.floor((arrow.x + arrow.width / 2) / tileSize), 24)); 
-    newArrayY = Math.max(1, Math.min(Math.floor((arrow.y + arrow.height / 2) / tileSize), 24));
-
-    if (30 < arrow.x && arrow.x < 770 && 30 < arrow.y && arrow.y < 800) {
-        if (!objectHitsWall(newArrayX, newArrayY)) {
-            // Update arrow position based on its speed
-            arrow.x += arrow.xChange || 0;
-            arrow.y += arrow.yChange || 0;
-    
-            // Save the current canvas state
-            ctx.save();
-    
-            // Translate to the arrow's position
-            ctx.translate(arrow.x, arrow.y);
-    
-            // Rotate the canvas based on the arrow's rotation angle
-            ctx.rotate(arrow.rotation);
-    
-            // Draw the arrow based on its direction of movement
-            if (arrow.xChange < 0) { // Arrow goes left
-                ctx.drawImage(arrow_image, -arrow.height, 0, arrow.height, arrow.width);
-
-                //setting arrow hitbox
-                arrow.hitbox.x = arrow.x + arrow.width/5;
-                arrow.hitbox.y = arrow.y + arrow.height/4;
-                arrow.hitbox.width = arrow.width*2; // hitbox width
-                arrow.hitbox.height = arrow.height/2;
-            } else if (arrow.xChange > 0) { // Arrow goes right
-                ctx.drawImage(arrow_image, 0, 0, arrow.height, arrow.width);
-            } else if (arrow.yChange < 0) { // Arrow goes up
-                ctx.drawImage(arrow_image, -arrow.width / 20, -arrow.height / 2, arrow.width, arrow.height);
-            } else { // Arrow goes down
-                ctx.drawImage(arrow_image, -arrow.width, -arrow.height / 2, arrow.width, arrow.height);
-            }
-    
-            // Restore the canvas state
-            ctx.restore();
-            
-            // Update the arrow's array indices
-            arrow.arrayX = newArrayX;
-            arrow.arrayY = newArrayY;
-
-            //setting arrow hitbox
-            arrow.hitbox.x = arrow.x + arrow.width/4.2;
-            arrow.hitbox.y = arrow.y + arrow.height/4;
-            arrow.hitbox.width = arrow.width/2; // hitbox width
-        } else {
-            resetArrow();
-        }
-    }else{
-        resetArrow();
-    }
-    
-}
-
-function resetArrow(){
-    arrow_alive = false;
-    arrow.xChange = 0;
-    arrow.yChange = 0;
-    arrow.height = 16;
-    arrow.width = 7;
-    arrow.x = 0;
-    arrow.y = 0;
-}
-
-function objectHitsWall(arrayX, arrayY){
-    let walls = [198, 105, 104, 107, 182, 203, 252, 298, 246, 247, 186, 103]
-    if (walls.includes(mapArray[arrayY][arrayX])){
-        return true;                    
-    }
-    else{
-        return false;
-    }
-}
-
-function checkCollisionWithObjects(object1, object2) {
-    // Implement collision detection logic with objects (walls, enemies, items)
-    // Return true if collision detected, otherwise return false
-    // Calculate the boundaries of object1
-    let object1Left = object1.x;
-    let object1Right = object1.x + object1.width;
-    let object1Top = object1.y;
-    let object1Bottom = object1.y + object1.height;
-
-    // Calculate the boundaries of object2
-    let object2Left = object2.x;
-    let object2Right = object2.x + object2.width;
-    let object2Top = object2.y;
-    let object2Bottom = object2.y + object2.height;
-
-    // Check for intersection
-    if (object1Right > object2Left &&
-        object1Left < object2Right && 
-        object1Bottom > object2Top && 
-        object1Top < object2Bottom) {
-        return true; // Collided
-    } else {
-        return false; // Not collided
-    }
-}
-
-function load_assets(assets, callback){
-    let num_assets = assets.length;
-    let loaded = function(){
-        console.log("loaded");
-        num_assets = num_assets - 1;
-        if (num_assets === 0){
-            callback();
-        }
-    };
-    for (let asset of assets){
-        let element = asset.var;
-        if (element instanceof HTMLImageElement){
-            console.log("img");
-            element.addEventListener("load", loaded, false);
-        }
-        else if (element instanceof HTMLAudioElement){
-            console.log("audio");
-            element.addEventListener("canplaythrough", loaded, false);
-        }
-        element.src = asset.url
-    }
-}
-
-function drawBackground(){
-    // used for drawing the map 
-    let mapIndex = 0;
-    let sourceX = 0;
-    let sourceY = 0;
-    // Draw background
-    for (let row = 0; row < mapArray.length; row++) {
-        for (let col = 0; col < mapArray[row].length; col++) {
-            let tileVal = mapArray[row][col];
-            if (tileVal !== 0) {
-                tileVal -= 1;
-                sourceY = Math.floor(tileVal / atlasCol) * tileSize;
-                sourceX = (tileVal % atlasCol) * tileSize;
-                ctx.save(); // Save the current canvas state
-                if (tileVal === 105) {
-                    // Adjust translation to center of the tile
-                    ctx.translate((col + 0.5) * updatedTileSize, (row + 0.5) * updatedTileSize);
-                    // Apply rotation of 180 degrees if tile value matches 105
-                    ctx.rotate(Math.PI); // Rotate by 180 degrees
-                    // Adjust the position back after rotation
-                    ctx.translate(-updatedTileSize / 2, -updatedTileSize / 2);
-                }
-                ctx.drawImage(
-                    tileAtlas,
-                    sourceX,
-                    sourceY,
-                    tileSize,
-                    tileSize,
-                    col * updatedTileSize,
-                    row * updatedTileSize,
-                    updatedTileSize,
-                    updatedTileSize
-                );
-                ctx.restore(); // Restore the canvas state
-            }
-            mapIndex++;
-        }
-    }
+  let key = event.key;
+  if (key === "ArrowUp") {
+    moveUp = false;
+  } else if (key === "ArrowDown") {
+    moveDown = false;
+  } else if (key === "ArrowLeft") {
+    moveLeft = false;
+  } else if (key === "ArrowRight") {
+    moveRight = false;
+  }
 }
