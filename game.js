@@ -1,6 +1,6 @@
 import { Bullet } from "./bullet.js";
 import { Character, Entity } from "./entity.js";
-import { drawBackground, drawCreature } from "./assets.js";
+import { drawBackground, drawEntity } from "./assets.js";
 
 let ctx; //thats context
 let CANVAS_WIDTH;
@@ -14,8 +14,8 @@ let then = Date.now();
 let character = {
   x: 30,
   y: 70,
-  width: 49,
-  height: 49,
+  width: 48,
+  height: 48,
   frameX: 0,
   frameY: 0,
   arrayX: 1, // these are the x and y on the background array
@@ -35,12 +35,13 @@ let arrow = {
   arrayX: 0,
   arrayY: 0,
   speed: 10,
-  sprite: "./static/arrow.png",
+  spritePath: "static/arrow_sprite.png",
 };
 let newArrow = new Bullet(arrow, false, 32, character);
 
 // idk if I need it
 let sprite_size = 96;
+const tileAtlasPath = "static/Dungeon_Tileset_at.png";
 
 // boolean values for keeping track of movement
 let moveUp = false;
@@ -103,17 +104,20 @@ function runGame() {
 
   // Clear the canvas
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
   // Draw the background and the walls
-  const tileAtlasPath = "static/Dungeon_Tileset_at.png";
   drawBackground(ctx, tileAtlasPath, mapArray);
 
   // Draw character
-  drawCreature(ctx, newCharacter);
+  drawEntity(ctx, newCharacter);
 
   // if arrow was shot this will animate it(redraw it)
-  if (newArrow.alive === true) {
+  if (newArrow.alive == true) {
     newArrow.redrawBullet(ctx, mapArray);
   }
+
+  ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+  ctx.fillRect(newCharacter.x, newCharacter.y, 5, 5);
 
   //   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
   //   ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
@@ -136,8 +140,8 @@ function activate(event) {
     moveRight = true;
   }
   if (key === " ") {
-    if (arrow.alive === false) {
-      arrow.shoot(ctx, character);
+    if (newArrow.alive === false) {
+      newArrow.shoot(ctx, character);
     }
   }
 }

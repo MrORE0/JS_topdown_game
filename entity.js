@@ -39,24 +39,22 @@ export class Character extends Entity {
     if (moveUp || moveDown || moveLeft || moveRight) {
       let newX = this.x;
       let newY = this.y;
+      let newArrayX = this.arrayX;
+      let newArrayY = this.arrayY;
 
       // Calculate diagonal speed using Pythagorean theorem
       let diagonalSpeed = this.speed / Math.sqrt(2);
-      this.newPosition(diagonalSpeed, moveUp, moveDown, moveLeft, moveRight, newX, newY);
+      [newX, newY] = this.newPosition(diagonalSpeed, moveUp, moveDown, moveLeft, moveRight, newX, newY);
 
-      // character's x and y position to array indices (1 to 24) so we can check for wall or item collision
-      if (moveLeft || moveDown) {
-        // Subtract 1 from the calculated array index to collide with walls before being on top of them
-        this.arrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 4) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
-        this.arrayY = Math.max(1, Math.min(Math.floor((newY + this.height) / this.tileSize), 24));
-      } else {
-        this.arrayX = Math.max(1, Math.min(Math.floor(newX / this.tileSize) + 1, 24));
-        this.arrayY = Math.max(1, Math.min(Math.floor(newY / this.tileSize) + 1, 24));
-      }
+      newArrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 3.5) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
+      newArrayY = Math.max(0, Math.min(Math.floor((newY + this.height / 1.5) / this.tileSize), 24));
 
       // Checking for arrayX or arrayY for colliding with walls;
-      if (objectHitsWall(this.arrayX, this.arrayY, mapArray)) {
+      if (objectHitsWall(newArrayX, newArrayY, mapArray)) {
         return;
+      } else {
+        this.arrayX = newArrayX;
+        this.arrayY = newArrayY;
       }
 
       // Update character position
@@ -105,5 +103,6 @@ export class Character extends Entity {
     } else if (moveRight) {
       newX += this.speed;
     }
+    return [newX, newY];
   }
 }

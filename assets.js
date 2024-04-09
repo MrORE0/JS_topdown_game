@@ -1,25 +1,3 @@
-export function load_assets(assets, callback) {
-  let num_assets = assets.length;
-  let loaded = function () {
-    console.log("loaded");
-    num_assets = num_assets - 1;
-    if (num_assets === 0) {
-      callback();
-    }
-  };
-  for (let asset of assets) {
-    let element = asset.var;
-    if (element instanceof HTMLImageElement) {
-      console.log("img");
-      element.addEventListener("load", loaded, false);
-    } else if (element instanceof HTMLAudioElement) {
-      console.log("audio");
-      element.addEventListener("canplaythrough", loaded, false);
-    }
-    element.src = asset.url;
-  }
-}
-
 export function drawBackground(ctx, tileAtlasPath, mapArray) {
   const tileAtlas = new Image();
   tileAtlas.src = tileAtlasPath;
@@ -50,15 +28,6 @@ export function drawBackground(ctx, tileAtlasPath, mapArray) {
         tileVal -= 1;
         sourceY = Math.floor(tileVal / atlasCol) * tileSize;
         sourceX = (tileVal % atlasCol) * tileSize;
-        ctx.save(); // Save the current canvas state
-        if (tileVal === 105) {
-          // Adjust translation to center of the tile
-          ctx.translate((col + 0.5) * updatedTileSize, (row + 0.5) * updatedTileSize);
-          // Apply rotation of 180 degrees if tile value matches 105
-          ctx.rotate(Math.PI); // Rotate by 180 degrees
-          // Adjust the position back after rotation
-          ctx.translate(-updatedTileSize / 2, -updatedTileSize / 2);
-        }
         ctx.drawImage(
           tileAtlas,
           sourceX,
@@ -78,7 +47,7 @@ export function drawBackground(ctx, tileAtlasPath, mapArray) {
 }
 
 // here you draw the creature
-export function drawCreature(ctx, creature) {
+export function drawEntity(ctx, creature) {
   let sprite = new Image();
   sprite.src = creature.spritePath;
   ctx.drawImage(
@@ -87,8 +56,8 @@ export function drawCreature(ctx, creature) {
     creature.frameY * creature.height,
     creature.width,
     creature.height,
-    creature.x,
-    creature.y,
+    creature.x - 12.5, //numbers are so it actually draws it on the x real x and y
+    creature.y - 13,
     creature.width,
     creature.height
   );

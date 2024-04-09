@@ -1,7 +1,7 @@
 import { objectHitsWall } from "./collisions.js";
 
 export class Bullet {
-  constructor({ x, y, width, height, xChange, yChange, arrayX, arrayY, speed, sprite }, alive = false, tileSize, creature) {
+  constructor({ x, y, width, height, xChange, yChange, arrayX, arrayY, speed, spritePath }, alive = false, tileSize, creature) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -11,7 +11,7 @@ export class Bullet {
     this.alive = alive;
     this.arrayX = arrayX;
     this.arrayY = arrayY;
-    this.sprite = sprite;
+    this.spritePath = spritePath;
     this.tileSize = tileSize;
     this.speed = speed; //10
     this.creature = creature;
@@ -62,9 +62,12 @@ export class Bullet {
       this.orientation = "left";
     }
 
+    let sprite = new Image();
+    sprite.src = this.spritePath;
+    console.log(this.spritePath);
     // Draw the bullet
     ctx.drawImage(
-      this.sprite,
+      sprite,
       creature.frameX * this.width,
       creature.frameY * this.height,
       this.width,
@@ -75,7 +78,6 @@ export class Bullet {
       this.height
     );
     this.alive = true;
-    // Set array x and y for the this based on its starting position
     this.arrayX = creature.arrayX;
     this.arrayY = creature.arrayY;
   }
@@ -98,6 +100,7 @@ export class Bullet {
       // } else if (this.xChange < 0) {
       //   // goes left
       // }
+
       ctx.drawImage(
         this.sprite,
         this.creature.frameX * this.width,
