@@ -38,6 +38,8 @@ export class Bullet {
     let sprite;
     //draw bullet based on frame
     // Rotate and draw the this based on the creature's facing direction
+    this.x = creature.x;
+    this.y = creature.y;
     if (creature.frameY === 2) {
       // creature is facing right
       let temp = this.width;
@@ -72,11 +74,12 @@ export class Bullet {
       this.frameY * this.height,
       this.width,
       this.height,
-      creature.x + creature.width / 4,
-      creature.y + creature.height / 2,
+      this.x + creature.width / 6,
+      this.y + creature.height / 2.5,
       this.width,
       this.height
     );
+    debugger;
     this.alive = true;
     this.arrayX = creature.arrayX;
     this.arrayY = creature.arrayY;

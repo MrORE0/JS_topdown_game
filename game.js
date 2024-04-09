@@ -25,6 +25,7 @@ let character = {
 };
 let newCharacter = new Character(character, true, 32);
 
+// doing that because these need to be loaded before drawn
 let arrowV = new Image();
 arrowV.src = "static/arrow_sprite_vertical.png";
 let arrowH = new Image();
