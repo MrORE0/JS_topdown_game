@@ -16,6 +16,8 @@ export class Bullet {
     this.speed = speed; //10
     this.creature = creature;
     this.rotation = 0;
+    this.sprite = new Image();
+    this.sprite.src = this.spritePath;
   }
 
   resetArrow() {
@@ -33,9 +35,6 @@ export class Bullet {
 
   shoot(ctx, creature) {
     //draw bullet based on frame
-    let sprite = new Image();
-    sprite.src = this.spritePath;
-
     // Rotate and draw the this based on the creature's facing direction
     if (creature.frameY === 2) {
       // creature is facing right
@@ -53,7 +52,8 @@ export class Bullet {
       this.height = temp;
     }
 
-    ctx.drawImage(sprite, creature.x, creature.y);
+    ctx.drawImage(this.sprite, creature.x, creature.y);
+    console.log(ctx);
     // Draw the bullet
     // ctx.drawImage(
     //   sprite,
@@ -102,37 +102,5 @@ export class Bullet {
       //   this.height
       // );
     }
-  }
-
-  orientBullet(ctx, creature) {
-    if (creature.frameY === 2) {
-      // facing right
-      this.rotation = Math.PI / 2;
-      // setting new x and y for the bullet
-      this.x = creature.x + creature.width; // on the pointy of the this
-      this.y = creature.y + creature.height / 2;
-      this.xChange = this.speed;
-    } else if (creature.frameY === 0) {
-      // creature is facing down
-      this.rotation = Math.PI;
-      // setting new x and y for the bullet
-      this.x = creature.x + creature.width / 2.4; // division by 2.4 because this acftually is the center
-      this.yChange = this.speed;
-    } else if (creature.frameY === 3) {
-      // creature is facing up
-      this.rotation = 0;
-      // setting new x and y for the bullet
-      this.x = creature.x + creature.width / 2.4; // division by 2.4 because this actually is the center
-      this.y = creature.y;
-      this.yChange = -this.speed;
-    } else if (creature.frameY === 1) {
-      // creature is facing left
-      this.rotation = -Math.PI / 2;
-      //setting new x and y for the bullet
-      this.x = creature.x - this.height / 2;
-      this.y = creature.y + creature.height / 2;
-      this.xChange = -this.speed;
-    }
-    ctx.drawImage;
   }
 }
