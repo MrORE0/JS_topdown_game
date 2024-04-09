@@ -1,7 +1,7 @@
 import { objectHitsWall } from "./collisions.js";
 
 export class Bullet {
-  constructor({ x, y, width, height, xChange, yChange, arrayX, arrayY, speed, spritePath }, alive = false, tileSize, creature) {
+  constructor({ x, y, width, height, xChange, yChange, arrayX, arrayY, speed, spriteV, spriteH }, alive = false, tileSize, creature) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -11,13 +11,14 @@ export class Bullet {
     this.alive = alive;
     this.arrayX = arrayX;
     this.arrayY = arrayY;
-    this.spritePath = spritePath;
     this.tileSize = tileSize;
     this.speed = speed; //10
     this.creature = creature;
     this.rotation = 0;
-    this.sprite = new Image();
-    this.sprite.src = this.spritePath;
+    this.spriteV = spriteV;
+    this.spriteH = spriteH;
+    this.frameX = 0;
+    this.frameY = 0;
   }
 
   resetArrow() {
@@ -34,6 +35,7 @@ export class Bullet {
   // bullet?.move(ctx)
 
   shoot(ctx, creature) {
+    let sprite;
     //draw bullet based on frame
     // Rotate and draw the this based on the creature's facing direction
     if (creature.frameY === 2) {
@@ -41,31 +43,40 @@ export class Bullet {
       let temp = this.width;
       this.width = this.height; // 16
       this.height = temp; // 7
+      this.frameX = 0;
+      this.frameY = 0;
+      sprite = this.spriteH;
     } else if (creature.frameY === 0) {
       // creature is facing down
+      this.frameX = 0;
+      this.frameY = 0;
+      sprite = this.spriteV;
     } else if (creature.frameY === 3) {
       // creature is facing up
+      this.frameX = 1;
+      this.frameY = 0;
+      sprite = this.spriteV;
     } else if (creature.frameY === 1) {
       // creature is facing left
       let temp = this.width;
       this.width = this.height;
       this.height = temp;
+      this.frameX = 0;
+      this.frameY = 1;
+      sprite = this.spriteH;
     }
 
-    ctx.drawImage(this.sprite, creature.x, creature.y);
-    console.log(ctx);
-    // Draw the bullet
-    // ctx.drawImage(
-    //   sprite,
-    //   creature.frameX * this.width,
-    //   creature.frameY * this.height,
-    //   this.width,
-    //   this.height,
-    //   creature.x,
-    //   creature.y,
-    //   this.width,
-    //   this.height
-    // );
+    ctx.drawImage(
+      sprite,
+      this.frameX * this.width,
+      this.frameY * this.height,
+      this.width,
+      this.height,
+      creature.x + creature.width / 4,
+      creature.y + creature.height / 2,
+      this.width,
+      this.height
+    );
     this.alive = true;
     this.arrayX = creature.arrayX;
     this.arrayY = creature.arrayY;
@@ -80,27 +91,17 @@ export class Bullet {
       this.x += this.xChange || 0;
       this.y += this.yChange || 0;
 
-      // if (this.xChange > 0) {
-      //   // goes right
-      // } else if (this.yChange > 0) {
-      //   // goes down
-      // } else if (this.yChange < 0) {
-      //   // goes up
-      // } else if (this.xChange < 0) {
-      //   // goes left
-      // }
-
-      // ctx.drawImage(
-      //   this.sprite,
-      //   this.creature.frameX * this.width,
-      //   this.creature.frameY * this.height,
-      //   this.width,
-      //   this.height,
-      //   this.x,
-      //   this.y,
-      //   this.width,
-      //   this.height
-      // );
+      ctx.drawImage(
+        this.sprite,
+        this.frameX * this.height, // figure this out
+        this.frameY * this.width,
+        this.width,
+        this.height,
+        creature.x + creature.width / 4,
+        creature.y + creature.height / 2,
+        this.width,
+        this.height
+      );
     }
   }
 }

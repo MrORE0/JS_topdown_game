@@ -25,6 +25,10 @@ let character = {
 };
 let newCharacter = new Character(character, true, 32);
 
+let arrowV = new Image();
+arrowV.src = "static/arrow_sprite_vertical.png";
+let arrowH = new Image();
+arrowH.src = "static/arrow_sprite_horizontal.png";
 let arrow = {
   x: 0,
   y: 0,
@@ -35,7 +39,8 @@ let arrow = {
   arrayX: 0,
   arrayY: 0,
   speed: 10,
-  spritePath: "static/arrow_sprite.png",
+  spriteV: arrowV,
+  spriteH: arrowH,
 };
 let newArrow = new Bullet(arrow, false, 32, character);
 
