@@ -141,7 +141,7 @@ function activate(event) {
   }
   if (key === " ") {
     if (newArrow.alive === false) {
-      newArrow.shoot(ctx, character);
+      newArrow.shoot(ctx, newCharacter);
     }
   }
 }
