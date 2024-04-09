@@ -46,7 +46,7 @@ export class Character extends Entity {
       let diagonalSpeed = this.speed / Math.sqrt(2);
       [newX, newY] = this.newPosition(diagonalSpeed, moveUp, moveDown, moveLeft, moveRight, newX, newY);
 
-      newArrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 3.5) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
+      newArrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 4.7) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
       newArrayY = Math.max(0, Math.min(Math.floor((newY + this.height / 1.5) / this.tileSize), 24));
 
       // Checking for arrayX or arrayY for colliding with walls;
