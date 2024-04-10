@@ -43,7 +43,7 @@ let arrow = {
   spriteV: arrowV,
   spriteH: arrowH,
 };
-let newArrow = new Bullet(arrow, false, 32, character);
+let newArrow = new Bullet(arrow, false, 32, newCharacter);
 
 // idk if I need it
 let sprite_size = 96;

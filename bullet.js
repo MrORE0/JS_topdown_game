@@ -19,6 +19,7 @@ export class Bullet {
     this.spriteH = spriteH;
     this.frameX = 0;
     this.frameY = 0;
+    this.sprite;
   }
 
   resetArrow() {
@@ -35,11 +36,10 @@ export class Bullet {
   // bullet?.move(ctx)
 
   shoot(ctx, creature) {
-    let sprite;
     //draw bullet based on frame
     // Rotate and draw the this based on the creature's facing direction
-    this.x = creature.x;
-    this.y = creature.y;
+    this.x = creature.x + creature.width / 6;
+    this.y = creature.y + creature.height / 2.5;
     if (creature.frameY === 2) {
       // creature is facing right
       let temp = this.width;
@@ -47,17 +47,17 @@ export class Bullet {
       this.height = temp; // 7
       this.frameX = 0;
       this.frameY = 0;
-      sprite = this.spriteH;
+      this.sprite = this.spriteH;
     } else if (creature.frameY === 0) {
       // creature is facing down
       this.frameX = 0;
       this.frameY = 0;
-      sprite = this.spriteV;
+      this.sprite = this.spriteV;
     } else if (creature.frameY === 3) {
       // creature is facing up
       this.frameX = 1;
       this.frameY = 0;
-      sprite = this.spriteV;
+      this.sprite = this.spriteV;
     } else if (creature.frameY === 1) {
       // creature is facing left
       let temp = this.width;
@@ -65,46 +65,42 @@ export class Bullet {
       this.height = temp;
       this.frameX = 0;
       this.frameY = 1;
-      sprite = this.spriteH;
+      this.sprite = this.spriteH;
     }
 
-    ctx.drawImage(
-      sprite,
-      this.frameX * this.width,
-      this.frameY * this.height,
-      this.width,
-      this.height,
-      this.x + creature.width / 6,
-      this.y + creature.height / 2.5,
-      this.width,
-      this.height
-    );
-    debugger;
+    ctx.drawImage(this.sprite, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     this.alive = true;
     this.arrayX = creature.arrayX;
     this.arrayY = creature.arrayY;
+    debugger;
   }
 
   redrawBullet(ctx, mapArray) {
     //move the bullet
-    if (30 < this.x && this.x < 770 && 30 < this.y && this.y < 800 && !objectHitsWall(newArrayX, newArrayY, mapArray)) {
-      newArrayX = Math.max(1, Math.min(Math.floor((this.x + this.width / 2) / this.tileSize), 24));
-      newArrayY = Math.max(1, Math.min(Math.floor((this.y + this.height / 2) / this.tileSize), 24));
-      // Update this position based on its speed
-      this.x += this.xChange || 0;
-      this.y += this.yChange || 0;
-
-      ctx.drawImage(
-        this.sprite,
-        this.frameX * this.height, // figure this out
-        this.frameY * this.width,
-        this.width,
-        this.height,
-        creature.x + creature.width / 4,
-        creature.y + creature.height / 2,
-        this.width,
-        this.height
-      );
+    if (30 < this.x && this.x < 770 && 30 < this.y && this.y < 800) {
+      let newArrayX = Math.max(1, Math.min(Math.floor((this.x + this.width / 2) / this.tileSize), 24));
+      let newArrayY = Math.max(1, Math.min(Math.floor((this.y + this.height / 2) / this.tileSize), 24));
+      if (!objectHitsWall(newArrayX, newArrayY, mapArray)) {
+        // Update this position based on its speed
+        this.x += this.xChange || 0;
+        this.y += this.yChange || 0;
+        // doesn't draw it properly
+        ctx.drawImage(
+          this.sprite,
+          this.frameX * this.width,
+          this.frameY * this.height,
+          this.width,
+          this.height,
+          this.x,
+          this.y,
+          this.width,
+          this.height
+        );
+      } else {
+        this.resetArrow();
+      }
+    } else {
+      this.resetArrow();
     }
   }
 }
