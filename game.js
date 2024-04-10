@@ -122,16 +122,9 @@ function runGame() {
     newArrow.redrawBullet(ctx, mapArray);
   }
 
+  // newCharacter x and y
   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
   ctx.fillRect(newCharacter.x, newCharacter.y, 5, 5);
-
-  //   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-  //   ctx.fillRect(character.hitbox.x, character.hitbox.y, character.hitbox.width, character.hitbox.height);
-
-  //   ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-  //   console.log("in draw function", arrow.hitbox.x);
-  //   console.log("in draw function", arrow.hitbox.y);
-  //   ctx.fillRect(arrow.hitbox.x, arrow.hitbox.y, arrow.hitbox.width, arrow.hitbox.height);
 }
 
 function activate(event) {
