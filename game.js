@@ -1,5 +1,5 @@
 import { Bullet } from "./bullet.js";
-import { Character, Worm } from "./entity.js";
+import { Character, makeWorms } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
 
 let ctx; //thats context
@@ -22,18 +22,6 @@ let character = {
   spritePath: "./static/character.png",
 };
 let newCharacter = new Character(character, true, 32);
-
-// make it spawn at random that is not a wall or the character and within
-let worm = {
-  x: 45,
-  y: 35,
-  width: 32,
-  height: 32,
-  frameX: 0,
-  frameY: 0,
-  spritePath: "./static/Worm_Sprite.png",
-};
-let worm1 = new Worm(worm, true, 32);
 
 // doing that because these need to be loaded before drawn
 let arrowV = new Image();
@@ -91,6 +79,7 @@ let mapArray = [
   [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251],
 ];
 
+let worms = makeWorms(5, newCharacter, mapArray);
 document.addEventListener("DOMContentLoaded", startGame, false);
 
 function startGame() {
@@ -126,20 +115,23 @@ function runGame() {
   drawEntity(ctx, newCharacter);
 
   // Draw the enemies
-  if (worm1.alive == true) {
-    worm1.frameX = (worm1.frameX + 1) % 8;
-    drawEntity(ctx, worm1);
-  } else {
-    worm1.frameY = 6;
-    worm1.frameX = 0;
-    drawEntity(ctx, worm1);
-  }
+  worms.forEach((worm) => {
+    if (worm.alive == true) {
+      worm.frameX = (worm.frameX + 1) % 8;
+      drawEntity(ctx, worm);
+      // check if arrow has hit the enemies
+      if (newArrow.arrayX == worm.arrayX && newArrow.arrayY == worm.arrayY) {
+        newArrow.alive = false;
+        newArrow.resetArrow();
+        worm.alive = false;
+        worm.frameY = 6;
+        worm.frameX = 0;
+      }
+    } else {
+      drawEntity(ctx, worm);
+    }
+  });
 
-  // check if arrow has hit the enemies
-  if (newArrow.arrayX == worm1.arrayX && newArrow.arrayY == worm1.arrayY) {
-    newArrow.alive = false;
-    worm1.alive = false;
-  }
   // if arrow was shot this will animate it(redraw it)
   if (newArrow.alive == true) {
     newArrow.redrawBullet(ctx, mapArray);
@@ -164,6 +156,7 @@ function activate(event) {
   if (key === " ") {
     if (newArrow.alive === false) {
       newArrow.shoot(ctx, newCharacter);
+      console.log(newCharacter.x, newCharacter.y);
     }
   }
 }

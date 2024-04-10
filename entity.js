@@ -109,7 +109,7 @@ export class Character extends Entity {
 
 export class Worm extends Entity {
   constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
-    super(x, y, width, height, speed, spritePath, alive, tileSize);
+    super(x, y, width, height, frameX, frameY, speed, spritePath, alive, tileSize);
     this.x = x;
     this.y = y;
     this.width = width;
@@ -117,10 +117,47 @@ export class Worm extends Entity {
     this.frameX = frameX;
     this.frameY = frameY;
     this.alive = alive;
+    this.tileSize = tileSize;
     this.arrayX = Math.max(0, Math.min(Math.floor((this.x + this.width / 4.7) / this.tileSize), 24));
     this.arrayY = Math.max(0, Math.min(Math.floor((this.y + this.height / 1.5) / this.tileSize), 24));
     this.speed = speed; // how often it appears
     this.spritePath = spritePath;
-    this.tileSize = tileSize;
   }
+}
+
+export function makeWorms(amount, character, mapArray) {
+  let worms = [];
+  let cords = [
+    [40, 50],
+    [102, 98],
+    [191, 735],
+    [365, 735],
+    [231, 701],
+    [231, 461],
+    [101, 281],
+    [101, 111],
+    [208, 94],
+    [272, 170],
+    [604, 186],
+  ];
+  for (let i = 0; i < amount; i++) {
+    let index = Math.floor(Math.random() * cords.length);
+    let [cordX, cordY] = cords.splice(index, 1)[0];
+    let worm = new Worm(
+      {
+        x: cordX,
+        y: cordY,
+        width: 32,
+        height: 32,
+        frameX: 0,
+        frameY: 0,
+        speed: 10, // might change it later
+        spritePath: "./static/Worm_Sprite.png",
+      },
+      true,
+      32
+    );
+    worms.push(worm);
+  }
+  return worms;
 }
