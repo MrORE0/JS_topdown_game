@@ -39,7 +39,6 @@ export function drawBackground(ctx, tileAtlasPath, mapArray) {
           updatedTileSize,
           updatedTileSize
         );
-        ctx.restore(); // Restore the canvas state
       }
       mapIndex++;
     }

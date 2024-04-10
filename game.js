@@ -18,12 +18,22 @@ let character = {
   height: 48,
   frameX: 0,
   frameY: 0,
-  arrayX: 1, // these are the x and y on the background array
-  arrayY: 24,
   speed: 10,
   spritePath: "./static/character.png",
 };
 let newCharacter = new Character(character, true, 32);
+
+let worm1 = {
+  x: 30,
+  y: 30,
+  width: 32,
+  height: 32,
+  frameX: 0,
+  frameY: 0,
+  arrayX: 0, // these are the x and y on the background array
+  arrayY: 0,
+  spritePath: "./static/Worm_Sprite.png",
+};
 
 // doing that because these need to be loaded before drawn
 let arrowV = new Image();
@@ -45,16 +55,14 @@ let arrow = {
 };
 let newArrow = new Bullet(arrow, false, 32, newCharacter);
 
-// idk if I need it
-let sprite_size = 96;
-const tileAtlasPath = "static/Dungeon_Tileset_at.png";
-
 // boolean values for keeping track of movement
 let moveUp = false;
 let moveDown = false;
 let moveLeft = false;
 let moveRight = false;
 
+// maybe put this in the draw background function
+const tileAtlasPath = "static/Dungeon_Tileset_at.png";
 let mapArray = [
   [182, 186, 186, 117, 99, 117, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 186, 118, 184, 185, 107],
   [198, 153, 153, 153, 153, 143, 105, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 105, 153, 153, 153, 203],
@@ -116,6 +124,9 @@ function runGame() {
 
   // Draw character
   drawEntity(ctx, newCharacter);
+
+  // Draw the enemies
+  drawEntity(ctx, worm1);
 
   // if arrow was shot this will animate it(redraw it)
   if (newArrow.alive == true) {
