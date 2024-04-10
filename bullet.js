@@ -99,6 +99,8 @@ export class Bullet {
           this.width,
           this.height
         );
+        this.arrayX = newArrayX;
+        this.arrayY = newArrayY;
       } else {
         this.resetArrow();
       }

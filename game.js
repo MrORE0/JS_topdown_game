@@ -1,5 +1,5 @@
 import { Bullet } from "./bullet.js";
-import { Character, Entity } from "./entity.js";
+import { Character, Worm } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
 
 let ctx; //thats context
@@ -23,17 +23,17 @@ let character = {
 };
 let newCharacter = new Character(character, true, 32);
 
-let worm1 = {
-  x: 30,
-  y: 30,
+// make it spawn at random that is not a wall or the character and within
+let worm = {
+  x: 45,
+  y: 35,
   width: 32,
   height: 32,
   frameX: 0,
   frameY: 0,
-  arrayX: 0, // these are the x and y on the background array
-  arrayY: 0,
   spritePath: "./static/Worm_Sprite.png",
 };
+let worm1 = new Worm(worm, true, 32);
 
 // doing that because these need to be loaded before drawn
 let arrowV = new Image();
@@ -126,8 +126,20 @@ function runGame() {
   drawEntity(ctx, newCharacter);
 
   // Draw the enemies
-  drawEntity(ctx, worm1);
+  if (worm1.alive == true) {
+    worm1.frameX = (worm1.frameX + 1) % 8;
+    drawEntity(ctx, worm1);
+  } else {
+    worm1.frameY = 6;
+    worm1.frameX = 0;
+    drawEntity(ctx, worm1);
+  }
 
+  // check if arrow has hit the enemies
+  if (newArrow.arrayX == worm1.arrayX && newArrow.arrayY == worm1.arrayY) {
+    newArrow.alive = false;
+    worm1.alive = false;
+  }
   // if arrow was shot this will animate it(redraw it)
   if (newArrow.alive == true) {
     newArrow.redrawBullet(ctx, mapArray);

@@ -108,8 +108,8 @@ export class Character extends Entity {
 }
 
 export class Worm extends Entity {
-  constructor({ x, y, width, height, frameX, frameY, arrayX, arrayY, speed, spritePath }, alive = true, tileSize) {
-    super(x, y, width, height, arrayX, arrayY, speed, spritePath, alive, tileSize);
+  constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
+    super(x, y, width, height, speed, spritePath, alive, tileSize);
     this.x = x;
     this.y = y;
     this.width = width;
@@ -117,11 +117,10 @@ export class Worm extends Entity {
     this.frameX = frameX;
     this.frameY = frameY;
     this.alive = alive;
-    this.arrayX = arrayX;
-    this.arrayY = arrayY;
+    this.arrayX = Math.max(0, Math.min(Math.floor((this.x + this.width / 4.7) / this.tileSize), 24));
+    this.arrayY = Math.max(0, Math.min(Math.floor((this.y + this.height / 1.5) / this.tileSize), 24));
     this.speed = speed; // how often it appears
     this.spritePath = spritePath;
     this.tileSize = tileSize;
-    this.speed = speed;
   }
 }
