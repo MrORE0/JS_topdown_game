@@ -186,6 +186,8 @@ function runGame() {
     if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
       newArrow.alive = false;
       newArrow.resetArrow();
+      enemy.arrayX = 0;
+      enemy.arrayY = 0;
       enemy.alive = false;
       enemy.frameY = 6;
       enemy.frameX = 0;

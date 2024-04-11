@@ -128,7 +128,7 @@ export class Enemy extends Entity {
     this.alive = alive;
     this.tileSize = tileSize;
     this.arrayX = Math.max(0, Math.min(Math.floor((this.x + this.width / 4.7) / this.tileSize), 24));
-    this.arrayY = Math.max(0, Math.min(Math.floor((this.y + this.height / 1.5) / this.tileSize), 24));
+    this.arrayY = Math.max(0, Math.min(Math.floor((this.y + this.height / 3) / this.tileSize), 24));
     this.speed = speed; // how often it appears
     this.spritePath = spritePath;
   }
