@@ -19,10 +19,11 @@ export class Entity {
 }
 
 export class Character extends Entity {
-  constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
-    super(x, y, width, height, speed, spritePath, alive, tileSize);
+  constructor({ x, y, width, height, frameX, frameY, speed, spritePath, health }, alive = true, tileSize) {
+    super(x, y, width, height, speed, spritePath, health, alive, tileSize);
     this.x = x;
     this.y = y;
+    this.health = health;
     this.width = width;
     this.height = height;
     this.frameX = frameX;
@@ -35,7 +36,7 @@ export class Character extends Entity {
     this.spritePath = spritePath;
     this.speed = speed; //10
   }
-  move(moveUp, moveDown, moveLeft, moveRight, mapArray) {
+  move(moveUp, moveDown, moveLeft, moveRight, mapArray, worms) {
     if (moveUp || moveDown || moveLeft || moveRight) {
       let newX = this.x;
       let newY = this.y;
@@ -48,6 +49,13 @@ export class Character extends Entity {
 
       newArrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 4.7) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
       newArrayY = Math.max(0, Math.min(Math.floor((newY + this.height / 1.5) / this.tileSize), 24));
+
+      worms.forEach((worm) => {
+        if (this.arrayX == worm.arrayX && this.arrayY == worm.arrayY) {
+          this.health -= 1;
+          console.log(this.health);
+        }
+      });
 
       // Checking for arrayX or arrayY for colliding with walls;
       if (objectHitsWall(newArrayX, newArrayY, mapArray)) {
@@ -133,12 +141,15 @@ export function makeWorms(amount, character, mapArray) {
     [191, 735],
     [365, 735],
     [231, 701],
-    [231, 461],
+    [231, 480],
     [101, 281],
     [101, 111],
     [208, 94],
     [272, 170],
     [604, 186],
+    [645, 740],
+    [609, 480],
+    [746, 280],
   ];
   for (let i = 0; i < amount; i++) {
     let index = Math.floor(Math.random() * cords.length);

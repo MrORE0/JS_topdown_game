@@ -12,14 +12,15 @@ let now;
 let then = Date.now();
 
 let character = {
-  x: 30,
-  y: 70,
+  x: 37,
+  y: 725,
   width: 48,
   height: 48,
   frameX: 0,
   frameY: 0,
   speed: 10,
   spritePath: "./static/character.png",
+  health: 3,
 };
 let newCharacter = new Character(character, true, 32);
 
@@ -103,7 +104,7 @@ function runGame() {
   then = now - (elapsed % fpsInterval);
 
   // Move character based on movement flags
-  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray);
+  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, worms);
 
   // Clear the canvas
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
