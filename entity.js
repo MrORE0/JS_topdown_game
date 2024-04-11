@@ -52,7 +52,7 @@ export class Character extends Entity {
 
       worms.forEach((worm) => {
         if (this.arrayX == worm.arrayX && this.arrayY == worm.arrayY) {
-          this.health -= 1;
+          this.health -= 0.5;
           console.log(this.health);
         }
       });
@@ -115,7 +115,7 @@ export class Character extends Entity {
   }
 }
 
-export class Worm extends Entity {
+export class Enemy extends Entity {
   constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
     super(x, y, width, height, frameX, frameY, speed, spritePath, alive, tileSize);
     this.x = x;
@@ -133,7 +133,7 @@ export class Worm extends Entity {
   }
 }
 
-export function makeWorms(amount, character, mapArray) {
+export function makeWorms(amount) {
   let worms = [];
   let cords = [
     [40, 50],
@@ -154,7 +154,7 @@ export function makeWorms(amount, character, mapArray) {
   for (let i = 0; i < amount; i++) {
     let index = Math.floor(Math.random() * cords.length);
     let [cordX, cordY] = cords.splice(index, 1)[0];
-    let worm = new Worm(
+    let worm = new Enemy(
       {
         x: cordX,
         y: cordY,

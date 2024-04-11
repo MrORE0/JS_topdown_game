@@ -1,6 +1,7 @@
 import { Bullet } from "./bullet.js";
-import { Character, makeWorms } from "./entity.js";
+import { Character, makeWorms, Enemy } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
+import { objectHitsWall } from "./collisions.js";
 
 let ctx; //thats context
 let CANVAS_WIDTH;
@@ -80,7 +81,48 @@ let mapArray = [
   [246, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 247, 251],
 ];
 
-let worms = makeWorms(5, newCharacter, mapArray);
+function randomY(min, max, height, x) {
+  let y, arrayX, arrayY;
+  do {
+    arrayX = Math.max(0, Math.min(Math.floor((x + 16 / 5) / 32), 24));
+    y = Math.floor(Math.random() * (max - min + 1) + min) * 32 - height / 1.5;
+    arrayY = Math.max(0, Math.min(Math.floor((y + 32 / 2) / 32), 24));
+  } while (objectHitsWall(arrayX, arrayY, mapArray));
+  return y;
+}
+
+// defining enemies
+let enemies = makeWorms(5);
+let slimeL = new Enemy(
+  {
+    x: 590, // 591 for facing left, 236 for facing right
+    y: randomY(23, 1, 32, 590, mapArray), // random between 30, 770, between 250 and 30
+    width: 16,
+    height: 32,
+    frameX: 0,
+    frameY: 1,
+    speed: 10,
+    spritePath: "./static/slime_sprite.png",
+  },
+  true,
+  32
+);
+let slimeR = new Enemy(
+  {
+    x: 236,
+    y: randomY(23, 1, 32, 236),
+    width: 16,
+    height: 32,
+    frameX: 0,
+    frameY: 0,
+    speed: 10,
+    spritePath: "./static/slime_sprite.png",
+  },
+  true,
+  32
+);
+enemies.push(slimeL, slimeR);
+
 document.addEventListener("DOMContentLoaded", startGame, false);
 
 function startGame() {
@@ -91,6 +133,9 @@ function startGame() {
 
   window.addEventListener("keydown", activate, false);
   window.addEventListener("keyup", deactivate, false);
+  console.log(slimeL.x);
+  console.log(slimeL.y);
+  console.log(slimeL.arrayY);
   runGame();
 }
 
@@ -104,7 +149,7 @@ function runGame() {
   then = now - (elapsed % fpsInterval);
 
   // Move character based on movement flags
-  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, worms);
+  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies);
 
   // Clear the canvas
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -116,20 +161,20 @@ function runGame() {
   drawEntity(ctx, newCharacter);
 
   // Draw the enemies
-  worms.forEach((worm) => {
-    if (worm.alive == true) {
-      worm.frameX = (worm.frameX + 1) % 8;
-      drawEntity(ctx, worm);
+  enemies.forEach((enemy) => {
+    if (enemy.alive == true) {
+      enemy.frameX = (enemy.frameX + 1) % 7;
+      drawEntity(ctx, enemy);
       // check if arrow has hit the enemies
-      if (newArrow.arrayX == worm.arrayX && newArrow.arrayY == worm.arrayY) {
+      if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
         newArrow.alive = false;
         newArrow.resetArrow();
-        worm.alive = false;
-        worm.frameY = 6;
-        worm.frameX = 0;
+        enemy.alive = false;
+        enemy.frameY = 6;
+        enemy.frameX = 0;
       }
     } else {
-      drawEntity(ctx, worm);
+      drawEntity(ctx, enemy);
     }
   });
 
