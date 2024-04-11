@@ -25,7 +25,7 @@ let character = {
 };
 let newCharacter = new Character(character, true, 32);
 
-// doing that because these need to be loaded before drawn
+// defining projectiles
 let arrowV = new Image();
 arrowV.src = "static/arrow_sprite_vertical.png";
 let arrowH = new Image();
@@ -44,6 +44,24 @@ let arrow = {
   spriteH: arrowH,
 };
 let newArrow = new Bullet(arrow, false, 32, newCharacter);
+
+let projectiles = [];
+let slimeAttackSprite = new Image();
+slimeAttackSprite.src = "./static/slime_attack.png";
+let slimeAttack = {
+  x: 0,
+  y: 0,
+  width: 10,
+  height: 10,
+  xChange: 0,
+  yChange: 0,
+  arrayX: 0,
+  arrayY: 0,
+  speed: 10,
+  spriteV: slimeAttackSprite,
+  spriteH: slimeAttackSprite,
+};
+let newSlimeAttack = new Bullet(slimeAttack, false, 32, newCharacter);
 
 // boolean values for keeping track of movement
 let moveUp = false;
@@ -92,7 +110,6 @@ function randomY(min, max, height, x) {
 }
 
 // defining enemies
-let enemies = makeWorms(5);
 let slimeL = new Enemy(
   {
     x: 590, // 591 for facing left, 236 for facing right
@@ -110,7 +127,7 @@ let slimeL = new Enemy(
 let slimeR = new Enemy(
   {
     x: 236,
-    y: randomY(23, 1, 32, 236),
+    y: randomY(5, 9, 32, 236),
     width: 16,
     height: 32,
     frameX: 0,
@@ -121,6 +138,7 @@ let slimeR = new Enemy(
   true,
   32
 );
+let enemies = makeWorms(5);
 enemies.push(slimeL, slimeR);
 
 document.addEventListener("DOMContentLoaded", startGame, false);
@@ -133,15 +151,13 @@ function startGame() {
 
   window.addEventListener("keydown", activate, false);
   window.addEventListener("keyup", deactivate, false);
-  console.log(slimeL.x);
-  console.log(slimeL.y);
-  console.log(slimeL.arrayY);
   runGame();
+  console.log(enemies);
 }
 
 function runGame() {
   window.requestAnimationFrame(runGame);
-  let now = Date.now();
+  now = Date.now();
   let elapsed = now - then;
   if (elapsed <= fpsInterval) {
     return;
@@ -162,19 +178,17 @@ function runGame() {
 
   // Draw the enemies
   enemies.forEach((enemy) => {
-    if (enemy.alive == true) {
-      enemy.frameX = (enemy.frameX + 1) % 7;
+    if (enemy.alive === true) {
+      enemy.frameX = (enemy.frameX + 1) % 6;
       drawEntity(ctx, enemy);
-      // check if arrow has hit the enemies
-      if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
-        newArrow.alive = false;
-        newArrow.resetArrow();
-        enemy.alive = false;
-        enemy.frameY = 6;
-        enemy.frameX = 0;
-      }
-    } else {
-      drawEntity(ctx, enemy);
+    }
+    // check if arrow has hit the enemies
+    if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
+      newArrow.alive = false;
+      newArrow.resetArrow();
+      enemy.alive = false;
+      enemy.frameY = 6;
+      enemy.frameX = 0;
     }
   });
 

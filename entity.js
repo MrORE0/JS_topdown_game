@@ -2,6 +2,7 @@ import { objectHitsWall } from "./collisions.js";
 
 export class Entity {
   constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
+    // future things, make a type attribute(worm, slime... so on)
     this.x = x;
     this.y = y;
     this.width = width;
@@ -51,7 +52,7 @@ export class Character extends Entity {
       newArrayY = Math.max(0, Math.min(Math.floor((newY + this.height / 1.5) / this.tileSize), 24));
 
       worms.forEach((worm) => {
-        if (this.arrayX == worm.arrayX && this.arrayY == worm.arrayY) {
+        if (this.arrayX == worm.arrayX && this.arrayY == worm.arrayY && worm.alive) {
           this.health -= 0.5;
           console.log(this.health);
         }
