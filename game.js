@@ -25,7 +25,8 @@ let character = {
 };
 let newCharacter = new Character(character, true, 32);
 
-// defining projectiles
+// defining
+let projectiles = [];
 let arrowV = new Image();
 arrowV.src = "static/arrow_sprite_vertical.png";
 let arrowH = new Image();
@@ -45,7 +46,6 @@ let arrow = {
 };
 let newArrow = new Bullet(arrow, false, 32, newCharacter);
 
-let projectiles = [];
 let slimeAttackSprite = new Image();
 slimeAttackSprite.src = "./static/slime_attack.png";
 let slimeAttack = {
@@ -61,7 +61,6 @@ let slimeAttack = {
   spriteV: slimeAttackSprite,
   spriteH: slimeAttackSprite,
 };
-let newSlimeAttack = new Bullet(slimeAttack, false, 32, newCharacter);
 
 // boolean values for keeping track of movement
 let moveUp = false;
@@ -118,7 +117,7 @@ let slimeL = new Enemy(
     height: 32,
     frameX: 0,
     frameY: 1,
-    speed: 10,
+    speed: -10,
     spritePath: "./static/slime_sprite.png",
   },
   true,
@@ -138,6 +137,8 @@ let slimeR = new Enemy(
   true,
   32
 );
+let attackSprite = new Image();
+attackSprite.src = "static/slime_attack.png";
 let enemies = makeWorms(5);
 enemies.push(slimeL, slimeR);
 
@@ -151,6 +152,8 @@ function startGame() {
 
   window.addEventListener("keydown", activate, false);
   window.addEventListener("keyup", deactivate, false);
+  slimeL.makeAttack(slimeAttack, attackSprite);
+  slimeR.makeAttack(slimeAttack, attackSprite);
   runGame();
   console.log(enemies);
 }
@@ -181,14 +184,23 @@ function runGame() {
     if (enemy.alive === true) {
       enemy.frameX = (enemy.frameX + 1) % 6;
       drawEntity(ctx, enemy);
+      if (enemy.spritePath === "./static/slime_sprite.png") {
+        if (enemy.attack.alive == true) {
+          // projectiles.push(enemy.attack);
+          enemy.attack.redrawBullet(ctx, mapArray, enemy);
+        } else {
+          enemy.attack.alive = true;
+        }
+      }
     }
     // check if arrow has hit the enemies
     if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
       newArrow.alive = false;
-      newArrow.resetArrow();
+      newArrow.resetArrow(arrow.spriteV.src, newCharacter);
       enemy.arrayX = 0;
       enemy.arrayY = 0;
       enemy.alive = false;
+      enemy.attack.alive = false;
       enemy.frameY = 6;
       enemy.frameX = 0;
     }
@@ -196,7 +208,7 @@ function runGame() {
 
   // if arrow was shot this will animate it(redraw it)
   if (newArrow.alive == true) {
-    newArrow.redrawBullet(ctx, mapArray);
+    newArrow.redrawBullet(ctx, mapArray, newCharacter);
   }
 
   // newCharacter x and y

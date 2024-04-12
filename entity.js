@@ -1,4 +1,5 @@
 import { objectHitsWall } from "./collisions.js";
+import { Bullet } from "./bullet.js";
 
 export class Entity {
   constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
@@ -131,6 +132,14 @@ export class Enemy extends Entity {
     this.arrayY = Math.max(0, Math.min(Math.floor((this.y + this.height / 3) / this.tileSize), 24));
     this.speed = speed; // how often it appears
     this.spritePath = spritePath;
+    this.attack;
+  }
+  makeAttack(attackBluePrint, attackSprite) {
+    attackBluePrint.x = this.x;
+    attackBluePrint.y = this.y;
+    this.attack = new Bullet(attackBluePrint, true, 32, this);
+    this.attack.xChange = this.speed;
+    this.attack.sprite = attackSprite;
   }
 }
 

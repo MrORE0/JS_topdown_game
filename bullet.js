@@ -22,24 +22,22 @@ export class Bullet {
     this.sprite;
   } // maybe make the arrow and the slime attack different things cuz some of the above are not needed for both
 
-  resetArrow() {
-    this.alive = false;
-    this.xChange = 0;
-    this.yChange = 0;
-    this.height = 16;
-    this.width = 7;
-    this.x = 0;
-    this.y = 0;
-  }
-
-  resetSlimeAttack() {
-    this.alive = false;
-    this.xChange = 0;
-    this.yChange = 0;
-    this.height = 10;
-    this.width = 10;
-    this.x = 0;
-    this.y = 0;
+  resetArrow(spritePath, creature) {
+    if (spritePath.includes("static/slime_attack.png")) {
+      this.alive = true;
+      this.height = 10;
+      this.width = 10;
+      this.x = creature.x;
+      this.y = creature.y;
+    } else {
+      this.alive = false;
+      this.xChange = 0;
+      this.yChange = 0;
+      this.height = 16;
+      this.width = 7;
+      this.x = 0;
+      this.y = 0;
+    }
   }
 
   //Ciganiq ? Gore dolu
@@ -87,7 +85,7 @@ export class Bullet {
     this.arrayX = creature.arrayX;
     this.arrayY = creature.arrayY;
   }
-  redrawBullet(ctx, mapArray) {
+  redrawBullet(ctx, mapArray, creature) {
     //move the bullet
     if (30 < this.x && this.x < 770 && 30 < this.y && this.y < 800) {
       let newArrayX = Math.max(1, Math.min(Math.floor((this.x + this.width / 2) / this.tileSize), 24));
@@ -110,50 +108,32 @@ export class Bullet {
         this.arrayX = newArrayX;
         this.arrayY = newArrayY;
       } else {
-        this.resetArrow();
+        this.resetArrow(this.sprite.src, creature);
+        console.log(this.sprite.src);
       }
     } else {
-      this.resetArrow();
+      this.resetArrow(this.sprite.src, creature);
     }
   }
 
-  shootSlimeAttack(ctx, creature, mapArray) {
-    if (this.alive) {
-      //move the bullet
-      if (30 < this.x && this.x < 770 && 30 < this.y && this.y < 800) {
-        let newArrayX = Math.max(1, Math.min(Math.floor((this.x + this.width / 2) / this.tileSize), 24));
-        let newArrayY = Math.max(1, Math.min(Math.floor((this.y + this.height / 2) / this.tileSize), 24));
-        if (!objectHitsWall(newArrayX, newArrayY, mapArray)) {
-          // Update this position based on its speed
-          this.x += this.xChange || 0;
-          ctx.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
-          this.arrayX = newArrayX;
-          this.arrayY = newArrayY;
-        } else {
-          this.resetSlimeAttack();
-        }
-      } else {
-        this.resetSlimeAttack();
-      }
-    } else {
-      this.x = creature.x + creature.width / 6;
-      this.y = creature.y + creature.height / 8;
-      if (creature.frameY === 0) {
-        // creature is facing right
-        this.sprite = this.spriteH;
-        this.xChange = this.speed;
-      } else if (creature.frameY === 1) {
-        // creature is facing left
-        this.frameX = 0;
-        this.frameY = 0;
-        this.sprite = this.spriteV;
-        this.xChange = this.speed * -1;
-      }
-
-      ctx.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
-      this.alive = true;
-      this.arrayX = creature.arrayX;
-      this.arrayY = creature.arrayY;
+  shootSlimeAttack(ctx, creature) {
+    this.x = creature.x + creature.width / 6;
+    this.y = creature.y + creature.height / 8;
+    if (creature.frameY === 0) {
+      // creature is facing right
+      this.sprite = this.spriteH;
+      this.xChange = this.speed;
+    } else if (creature.frameY === 1) {
+      // creature is facing left
+      this.frameX = 0;
+      this.frameY = 0;
+      this.sprite = this.spriteV;
+      this.xChange = this.speed * -1;
     }
+
+    ctx.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+    this.alive = true;
+    this.arrayX = creature.arrayX;
+    this.arrayY = creature.arrayY;
   }
 }
