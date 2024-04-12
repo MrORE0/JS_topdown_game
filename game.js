@@ -155,7 +155,6 @@ function startGame() {
   slimeL.makeAttack(slimeAttack, attackSprite);
   slimeR.makeAttack(slimeAttack, attackSprite);
   runGame();
-  console.log(enemies);
 }
 
 function runGame() {
@@ -230,7 +229,6 @@ function activate(event) {
   if (key === " ") {
     if (newArrow.alive === false) {
       newArrow.shoot(ctx, newCharacter);
-      console.log(newCharacter.x, newCharacter.y);
     }
   }
 }

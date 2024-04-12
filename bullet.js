@@ -109,7 +109,6 @@ export class Bullet {
         this.arrayY = newArrayY;
       } else {
         this.resetArrow(this.sprite.src, creature);
-        console.log(this.sprite.src);
       }
     } else {
       this.resetArrow(this.sprite.src, creature);
