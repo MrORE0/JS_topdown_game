@@ -1,6 +1,6 @@
 export function objectHitsWall(arrayX, arrayY, mapArray) {
   // this function should be passed the mapArray when called, but don't know how
-  let walls = [198, 105, 104, 107, 182, 203, 252, 298, 246, 247, 186, 103, 117, 99];
+  let walls = [198, 105, 104, 107, 182, 203, 252, 298, 246, 247, 186, 103, 117, 99, 184, 185];
   if (walls.includes(mapArray[arrayY][arrayX])) {
     return true;
   } else {

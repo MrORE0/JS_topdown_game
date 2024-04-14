@@ -254,14 +254,14 @@ function deactivate(event) {
   }
 }
 
-// function endGame(reason) {
-//   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-//   window.removeEventListener("keydown", activate);
-//   window.removeEventListener("keyup", deactivate);
-//   // Optionally, display a message or perform other actions indicating the game has ended
-//   if (reason == "dead") {
-//     console.log("Game over. You died.");
-//   } else if (reason == "won") {
-//     console.log("Game over. You won.");
-//   }
-// }
+export function endGame(reason) {
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  window.removeEventListener("keydown", activate);
+  window.removeEventListener("keyup", deactivate);
+  // Optionally, display a message or perform other actions indicating the game has ended
+  if (reason == "dead") {
+    console.log("Game over. You died.");
+  } else if (reason == "won") {
+    console.log("Game over. You won.");
+  }
+}

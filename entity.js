@@ -1,5 +1,6 @@
 import { objectHitsWall, objectGetsItem } from "./collisions.js";
 import { Bullet } from "./bullet.js";
+import { endGame } from "./game.js";
 
 export class Entity {
   constructor({ x, y, width, height, frameX, frameY, speed, spritePath }, alive = true, tileSize) {
@@ -61,6 +62,9 @@ export class Character extends Entity {
       });
 
       // Checking for arrayX or arrayY for colliding with walls;
+      if ((mapArray[newArrayY][newArrayX] === 184 || mapArray[newArrayY][newArrayX] === 185) && this.inventory["silver_key"] != 0) {
+        endGame("won");
+      }
       if (objectHitsWall(newArrayX, newArrayY, mapArray)) {
         return;
       } else {
