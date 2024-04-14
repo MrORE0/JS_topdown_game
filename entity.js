@@ -1,4 +1,4 @@
-import { objectHitsWall } from "./collisions.js";
+import { objectHitsWall, objectGetsItem } from "./collisions.js";
 import { Bullet } from "./bullet.js";
 
 export class Entity {
@@ -37,6 +37,7 @@ export class Character extends Entity {
     this.speed = speed;
     this.spritePath = spritePath;
     this.speed = speed; //10
+    this.inventory = { silver_key: 0, gold: 0 };
   }
   move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies) {
     if (moveUp || moveDown || moveLeft || moveRight) {
@@ -66,6 +67,7 @@ export class Character extends Entity {
         this.arrayX = newArrayX;
         this.arrayY = newArrayY;
       }
+      objectGetsItem(this.arrayX, this.arrayY, mapArray, this); //check if it got any items
 
       // Update character position
       this.x = newX;

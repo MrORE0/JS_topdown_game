@@ -8,6 +8,26 @@ export function objectHitsWall(arrayX, arrayY, mapArray) {
   }
 }
 
+export function objectGetsItem(arrayX, arrayY, mapArray, character) {
+  // this function should be passed the mapArray when called, but don't know how
+  let items = [126, 148, 143];
+  if (items.includes(mapArray[arrayY][arrayX])) {
+    let itemIndex = items.indexOf(mapArray[arrayY][arrayX]);
+    if (mapArray[arrayY][arrayX] === 126) {
+      character.inventory["silver_key"] += 1;
+    } else if (mapArray[arrayY][arrayX] === 148) {
+      character.health = 3; // health goes to max
+    } else if (mapArray[arrayY][arrayX] === 143) {
+      character.inventory["gold"] += 5;
+    }
+    items.splice(itemIndex, 1);
+    mapArray[arrayY][arrayX] = 153;
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export function checkCollisionWithObjects(object1, object2) {
   // Return true if collision detected, otherwise return false
   // Calculate the boundaries of object1
