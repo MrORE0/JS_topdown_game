@@ -3,6 +3,7 @@ import { Character, makeWorms, Enemy } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
 import { objectHitsWall } from "./collisions.js";
 
+let gameRunning = false;
 let ctx; //thats context
 let CANVAS_WIDTH;
 let CANVAS_HEIGHT;
@@ -154,72 +155,75 @@ function startGame() {
   window.addEventListener("keyup", deactivate, false);
   slimeL.makeAttack(slimeAttack, attackSprite);
   slimeR.makeAttack(slimeAttack, attackSprite);
+  gameRunning = true;
   runGame();
 }
 
 function runGame() {
-  window.requestAnimationFrame(runGame);
-  now = Date.now();
-  let elapsed = now - then;
-  if (elapsed <= fpsInterval) {
-    return;
-  }
-  then = now - (elapsed % fpsInterval);
+  if (gameRunning == true) {
+    window.requestAnimationFrame(runGame);
+    now = Date.now();
+    let elapsed = now - then;
+    if (elapsed <= fpsInterval) {
+      return;
+    }
+    then = now - (elapsed % fpsInterval);
 
-  // Move character based on movement flags
-  newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies);
+    // Move character based on movement flags
+    newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies);
 
-  // Clear the canvas
-  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    // Clear the canvas
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // Draw the background and the walls
-  drawBackground(ctx, tileAtlasPath, mapArray);
+    // Draw the background and the walls
+    drawBackground(ctx, tileAtlasPath, mapArray);
 
-  // Draw character
-  drawEntity(ctx, newCharacter);
+    // Draw character
+    drawEntity(ctx, newCharacter);
 
-  // Draw the enemies
-  enemies.forEach((enemy) => {
-    if (enemy.alive === true) {
-      enemy.frameX = (enemy.frameX + 1) % 6;
-      drawEntity(ctx, enemy);
-      if (enemy.spritePath === "./static/slime_sprite.png") {
-        if (enemy.attack.alive == true) {
-          // projectiles.push(enemy.attack);
-          enemy.attack.redrawBullet(ctx, mapArray, enemy);
-        } else {
-          enemy.attack.alive = true;
+    // Draw the enemies
+    enemies.forEach((enemy) => {
+      if (enemy.alive === true) {
+        enemy.frameX = (enemy.frameX + 1) % 6;
+        drawEntity(ctx, enemy);
+        if (enemy.spritePath === "./static/slime_sprite.png") {
+          if (enemy.attack.alive == true) {
+            // projectiles.push(enemy.attack);
+            enemy.attack.redrawBullet(ctx, mapArray, enemy);
+          } else {
+            enemy.attack.alive = true;
+          }
+        }
+        // check for character and enemy collision
+        if (
+          (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) ||
+          (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
+        ) {
+          console.log("hit");
         }
       }
-      // check for character and enemy collision
-      if (
-        (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) ||
-        (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
-      ) {
-        console.log("hit");
+      // check if arrow has hit the enemies
+      if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
+        newArrow.alive = false;
+        newArrow.resetArrow(arrow.spriteV.src, newCharacter);
+        enemy.arrayX = 0;
+        enemy.arrayY = 0;
+        enemy.alive = false;
+
+        enemy.frameY = 6;
+        enemy.frameX = 0;
       }
-    }
-    // check if arrow has hit the enemies
-    if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
-      newArrow.alive = false;
-      newArrow.resetArrow(arrow.spriteV.src, newCharacter);
-      enemy.arrayX = 0;
-      enemy.arrayY = 0;
-      enemy.alive = false;
+    });
 
-      enemy.frameY = 6;
-      enemy.frameX = 0;
+    // if arrow was shot this will animate it(redraw it)
+    if (newArrow.alive == true) {
+      newArrow.redrawBullet(ctx, mapArray, newCharacter);
     }
-  });
 
-  // if arrow was shot this will animate it(redraw it)
-  if (newArrow.alive == true) {
-    newArrow.redrawBullet(ctx, mapArray, newCharacter);
+    // newCharacter x and y
+    ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+    ctx.fillRect(newCharacter.x, newCharacter.y, 5, 5);
   }
-
-  // newCharacter x and y
-  ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-  ctx.fillRect(newCharacter.x, newCharacter.y, 5, 5);
 }
 
 function activate(event) {
@@ -258,6 +262,7 @@ export function endGame(reason) {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   window.removeEventListener("keydown", activate);
   window.removeEventListener("keyup", deactivate);
+  gameRunning = false;
   // Optionally, display a message or perform other actions indicating the game has ended
   if (reason == "dead") {
     console.log("Game over. You died.");
