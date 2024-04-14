@@ -191,6 +191,13 @@ function runGame() {
           enemy.attack.alive = true;
         }
       }
+      // check for character and enemy collision
+      if (
+        (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) ||
+        (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
+      ) {
+        console.log("hit");
+      }
     }
     // check if arrow has hit the enemies
     if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
@@ -245,3 +252,15 @@ function deactivate(event) {
     moveRight = false;
   }
 }
+
+// function endGame(reason) {
+//   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+//   window.removeEventListener("keydown", activate);
+//   window.removeEventListener("keyup", deactivate);
+//   // Optionally, display a message or perform other actions indicating the game has ended
+//   if (reason == "dead") {
+//     console.log("Game over. You died.");
+//   } else if (reason == "won") {
+//     console.log("Game over. You won.");
+//   }
+// }

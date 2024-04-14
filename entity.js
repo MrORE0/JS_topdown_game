@@ -38,7 +38,7 @@ export class Character extends Entity {
     this.spritePath = spritePath;
     this.speed = speed; //10
   }
-  move(moveUp, moveDown, moveLeft, moveRight, mapArray, worms) {
+  move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies) {
     if (moveUp || moveDown || moveLeft || moveRight) {
       let newX = this.x;
       let newY = this.y;
@@ -52,10 +52,10 @@ export class Character extends Entity {
       newArrayX = Math.max(0, Math.min(Math.floor((newX + this.width / 4.7) / this.tileSize), 24)); // divide by 4 instead of 2 so it doesn't go on to of a wall
       newArrayY = Math.max(0, Math.min(Math.floor((newY + this.height / 1.5) / this.tileSize), 24));
 
-      worms.forEach((worm) => {
-        if (this.arrayX == worm.arrayX && this.arrayY == worm.arrayY && worm.alive) {
+      enemies.forEach((enemy) => {
+        if (this.arrayX == enemy.arrayX && this.arrayY == enemy.arrayY && enemy.alive) {
           this.health -= 0.5;
-          console.log(this.health);
+          console.log("hit");
         }
       });
 
