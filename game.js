@@ -10,6 +10,15 @@ let character_dead = document.getElementById("character_dead");
 let creature_dead = document.getElementById("creature_dead");
 let won_game = document.getElementById("won_game");
 
+let ctx_hearts; //thats context
+let CANVAS_WIDTH_hearts;
+let CANVAS_HEIGHT_hearts;
+let canvas_hearts;
+let hearts = new Image();
+hearts.src = "static/hearts.png";
+let hearts_width = 130;
+let hearts_height = 140;
+
 let gameRunning = false;
 let ctx; //thats context
 let CANVAS_WIDTH;
@@ -30,7 +39,7 @@ let character = {
   frameY: 0,
   speed: 10,
   spritePath: "./static/character.png",
-  health: 3,
+  health: 12,
 };
 let newCharacter = new Character(character, true, 32);
 
@@ -154,6 +163,11 @@ enemies.push(slimeL, slimeR);
 document.addEventListener("DOMContentLoaded", startGame, false);
 
 function startGame() {
+  canvas_hearts = document.querySelector("#hearts");
+  ctx_hearts = canvas_hearts.getContext("2d");
+  CANVAS_WIDTH_hearts = canvas_hearts.width;
+  CANVAS_HEIGHT_hearts = canvas_hearts.height;
+
   canvas = document.querySelector("canvas");
   ctx = canvas.getContext("2d");
   CANVAS_WIDTH = canvas.width;
@@ -168,11 +182,15 @@ function startGame() {
   flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
   flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
+  background_music.addEventListener("ended", resetBackgroundMusic);
   background_music.play();
   background_music.volume = 0.5;
   runGame();
 }
-
+function resetBackgroundMusic() {
+  background_music.currentTime = 0;
+  background_music.play();
+}
 function runGame() {
   if (gameRunning == true) {
     window.requestAnimationFrame(runGame);
@@ -183,6 +201,9 @@ function runGame() {
     }
     then = now - (elapsed % fpsInterval);
 
+    //drawing the hearts
+    ctx_hearts.clearRect(0, 0, CANVAS_WIDTH_hearts, CANVAS_HEIGHT_hearts);
+    ctx_hearts.drawImage(hearts, 0, 0, hearts_width * newCharacter.health, hearts_height, 0, 0, hearts_width * newCharacter.health, hearts_height);
     // Move character based on movement flags
     newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight);
 
@@ -213,6 +234,7 @@ function runGame() {
           (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) ||
           (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
         ) {
+          newCharacter.health -= 0.5;
           console.log("hit");
           character_gets_hit.play();
         }
@@ -256,7 +278,7 @@ function activate(event) {
   if (key === " ") {
     if (newArrow.alive === false) {
       newArrow.shoot(ctx, newCharacter);
-      console.log(newCharacter.inventory);
+      console.log(newCharacter.health);
     }
   }
   if (key === "f") {

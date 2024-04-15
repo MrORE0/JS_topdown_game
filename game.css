@@ -16,7 +16,7 @@ canvas {
   content: "";
   display: block;
   width: 99%;
-  height: 97%;
+  height: 88%;
   position: absolute;
   background: radial-gradient(circle var(--range) at var(--Xpos) var(--Ypos), rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
 }
