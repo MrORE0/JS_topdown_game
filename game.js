@@ -3,7 +3,11 @@ import { Character, makeWorms, Enemy } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
 import { objectHitsWall } from "./collisions.js";
 
-let flashlight;
+// all sounds are from https://mixkit.co/free-sound-effects/game/?page=2
+let background_music = document.getElementById("background_music");
+let character_gets_hit = document.getElementById("character_gets_hit");
+let character_dead = document.getElementById("character_dead");
+let creature_dead = document.getElementById("creature_dead");
 
 let gameRunning = false;
 let ctx; //thats context
@@ -15,6 +19,7 @@ let fpsInterval = 1000 / 20; //denominator is fps
 let now;
 let then = Date.now();
 
+let flashlight;
 let character = {
   x: 37,
   y: 725,
@@ -162,6 +167,8 @@ function startGame() {
   flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
   flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
+  background_music.play();
+  background_music.volume = 0.5;
   runGame();
 }
 
@@ -206,10 +213,12 @@ function runGame() {
           (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
         ) {
           console.log("hit");
+          character_gets_hit.play();
         }
       }
       // check if arrow has hit the enemies
       if (newArrow.arrayX == enemy.arrayX && newArrow.arrayY == enemy.arrayY) {
+        creature_dead.play();
         newArrow.alive = false;
         newArrow.resetArrow(arrow.spriteV.src, newCharacter);
         enemy.arrayX = 0;
@@ -275,8 +284,10 @@ export function endGame(reason) {
   window.removeEventListener("keydown", activate);
   window.removeEventListener("keyup", deactivate);
   gameRunning = false;
+  background_music.pause();
   // Optionally, display a message or perform other actions indicating the game has ended
   if (reason == "dead") {
+    character_dead.play();
     console.log("Game over. You died.");
   } else if (reason == "won") {
     console.log("Game over. You won.");

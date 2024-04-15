@@ -41,6 +41,8 @@ export class Character extends Entity {
     this.inventory = { silver_key: 0, gold: 0 };
   }
   move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight) {
+    let character_gets_hit = document.getElementById("character_gets_hit");
+
     if (moveUp || moveDown || moveLeft || moveRight) {
       let newX = this.x;
       let newY = this.y;
@@ -58,6 +60,7 @@ export class Character extends Entity {
         if (this.arrayX == enemy.arrayX && this.arrayY == enemy.arrayY && enemy.alive) {
           this.health -= 0.5;
           console.log("hit");
+          character_gets_hit.play();
         }
       });
 

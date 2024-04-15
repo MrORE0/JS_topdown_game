@@ -9,15 +9,21 @@ export function objectHitsWall(arrayX, arrayY, mapArray) {
 }
 
 export function objectGetsItem(arrayX, arrayY, mapArray, character) {
+  //audio
+  let gets_item = document.getElementById("gets_item");
+  let health_potion = document.getElementById("health_potion");
   // this function should be passed the mapArray when called, but don't know how
   let items = [126, 148, 143];
   if (items.includes(mapArray[arrayY][arrayX])) {
     let itemIndex = items.indexOf(mapArray[arrayY][arrayX]);
     if (mapArray[arrayY][arrayX] === 126) {
+      gets_item.play();
       character.inventory["silver_key"] += 1;
     } else if (mapArray[arrayY][arrayX] === 148) {
+      health_potion.play();
       character.health = 3; // health goes to max
     } else if (mapArray[arrayY][arrayX] === 143) {
+      gets_item.play();
       character.inventory["gold"] += 5;
     }
     items.splice(itemIndex, 1);
