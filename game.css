@@ -8,8 +8,9 @@ canvas {
 }
 
 #flashlight {
-  --Xpos: 500vw;
-  --Ypos: 500vh;
+  --Xpos: 0;
+  --Ypos: 0;
+  --range: 9em;
 }
 #flashlight:before {
   content: "";
@@ -17,5 +18,5 @@ canvas {
   width: 99%;
   height: 97%;
   position: absolute;
-  background: radial-gradient(circle 9em at var(--Xpos) var(--Ypos), rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  background: radial-gradient(circle var(--range) at var(--Xpos) var(--Ypos), rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
 }

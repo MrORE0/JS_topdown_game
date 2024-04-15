@@ -77,7 +77,7 @@ export class Character extends Entity {
       this.x = newX;
       this.y = newY;
 
-      flashlight.style.setProperty("--Xpos", this.x + 450 + "px");
+      flashlight.style.setProperty("--Xpos", this.x + 200 + "px");
       flashlight.style.setProperty("--Ypos", this.y + 20 + "px");
 
       // Update character frame based on movement

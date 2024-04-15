@@ -159,7 +159,7 @@ function startGame() {
   slimeR.makeAttack(slimeAttack, attackSprite);
 
   flashlight = document.getElementById("flashlight");
-  flashlight.style.setProperty("--Xpos", newCharacter.x + 450 + "px");
+  flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
   flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
   runGame();
@@ -249,6 +249,9 @@ function activate(event) {
       console.log(newCharacter.inventory);
     }
   }
+  if (key === "f") {
+    flashlight.style.setProperty("--range", 90 + "em");
+  }
 }
 
 function deactivate(event) {
@@ -261,6 +264,9 @@ function deactivate(event) {
     moveLeft = false;
   } else if (key === "ArrowRight") {
     moveRight = false;
+  }
+  if (key === "f") {
+    flashlight.style.setProperty("--range", 9 + "em");
   }
 }
 
