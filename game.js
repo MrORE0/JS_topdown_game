@@ -159,7 +159,7 @@ function startGame() {
   slimeR.makeAttack(slimeAttack, attackSprite);
 
   flashlight = document.getElementById("flashlight");
-  flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
+  flashlight.style.setProperty("--Xpos", newCharacter.x + 450 + "px");
   flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
   runGame();
