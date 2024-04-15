@@ -40,7 +40,7 @@ export class Character extends Entity {
     this.speed = speed; //10
     this.inventory = { silver_key: 0, gold: 0 };
   }
-  move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies) {
+  move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight) {
     if (moveUp || moveDown || moveLeft || moveRight) {
       let newX = this.x;
       let newY = this.y;
@@ -76,6 +76,9 @@ export class Character extends Entity {
       // Update character position
       this.x = newX;
       this.y = newY;
+
+      flashlight.style.setProperty("--Xpos", this.x + 200 + "px");
+      flashlight.style.setProperty("--Ypos", this.y + 20 + "px");
 
       // Update character frame based on movement
       if (moveUp) {

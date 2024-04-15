@@ -3,6 +3,8 @@ import { Character, makeWorms, Enemy } from "./entity.js";
 import { drawBackground, drawEntity } from "./assets.js";
 import { objectHitsWall } from "./collisions.js";
 
+let flashlight;
+
 let gameRunning = false;
 let ctx; //thats context
 let CANVAS_WIDTH;
@@ -155,6 +157,10 @@ function startGame() {
   window.addEventListener("keyup", deactivate, false);
   slimeL.makeAttack(slimeAttack, attackSprite);
   slimeR.makeAttack(slimeAttack, attackSprite);
+
+  flashlight = document.getElementById("flashlight");
+  flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
+  flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
   runGame();
 }
@@ -170,7 +176,7 @@ function runGame() {
     then = now - (elapsed % fpsInterval);
 
     // Move character based on movement flags
-    newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies);
+    newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight);
 
     // Clear the canvas
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
