@@ -8,6 +8,7 @@ let background_music = document.getElementById("background_music");
 let character_gets_hit = document.getElementById("character_gets_hit");
 let character_dead = document.getElementById("character_dead");
 let creature_dead = document.getElementById("creature_dead");
+let won_game = document.getElementById("won_game");
 
 let gameRunning = false;
 let ctx; //thats context
@@ -290,6 +291,7 @@ export function endGame(reason) {
     character_dead.play();
     console.log("Game over. You died.");
   } else if (reason == "won") {
+    won_game.play();
     console.log("Game over. You won.");
   }
 }
