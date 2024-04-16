@@ -268,10 +268,9 @@ function runGame() {
     if (newArrow.alive == true) {
       newArrow.redrawBullet(ctx, mapArray, newCharacter);
     }
-
-    // newCharacter x and y
-    ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-    ctx.fillRect(newCharacter.x, newCharacter.y, 5, 5);
+    if (newCharacter.health < 0) {
+      endGame("dead");
+    }
   }
 }
 
@@ -326,5 +325,23 @@ export function endGame(reason) {
   } else if (reason == "won") {
     won_game.play();
     console.log("Game over. You won.");
+    flashlight.style.display = "none";
   }
+
+  let restartButton = document.createElement("button");
+  restartButton.textContent = "Restart Game";
+  restartButton.style.display = "block";
+  restartButton.style.margin = "20px auto";
+  restartButton.onclick = function () {
+    // Reload the page to restart the game
+    window.location.reload();
+  };
+  let h1Element = document.createElement("h1");
+  h1Element.textContent = "Game Over: " + (reason === "dead" ? "You Died" : "You Won");
+  h1Element.style.color = "white";
+  h1Element.style.textAlign = "center";
+  h1Element.style.fontWeight = "bold";
+
+  document.body.appendChild(h1Element);
+  document.body.appendChild(restartButton);
 }
