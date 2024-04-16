@@ -179,7 +179,7 @@ function startGame() {
   slimeR.makeAttack(slimeAttack, attackSprite);
 
   flashlight = document.getElementById("flashlight");
-  flashlight.style.setProperty("--Xpos", newCharacter.x + 200 + "px");
+  flashlight.style.setProperty("--Xpos", newCharacter.x + 450 + "px");
   flashlight.style.setProperty("--Ypos", newCharacter.y + 20 + "px");
   gameRunning = true;
   background_music.addEventListener("ended", resetBackgroundMusic);
@@ -203,7 +203,17 @@ function runGame() {
 
     //drawing the hearts
     ctx_hearts.clearRect(0, 0, CANVAS_WIDTH_hearts, CANVAS_HEIGHT_hearts);
-    ctx_hearts.drawImage(hearts, 0, 0, hearts_width * newCharacter.health, hearts_height, 0, 0, hearts_width * newCharacter.health, hearts_height);
+    ctx_hearts.drawImage(
+      hearts,
+      0,
+      0,
+      (hearts_width * newCharacter.health) / 4,
+      hearts_height,
+      0,
+      0,
+      (hearts_width * newCharacter.health) / 4,
+      hearts_height
+    );
     // Move character based on movement flags
     newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight);
 
@@ -230,10 +240,11 @@ function runGame() {
           }
         }
         // check for character and enemy collision
-        if (
-          (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) ||
-          (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY)
-        ) {
+        if (enemy.arrayX === newCharacter.arrayX && enemy.arrayY === newCharacter.arrayY) {
+          newCharacter.health -= 0.2;
+          console.log("hit");
+          character_gets_hit.play();
+        } else if (enemy?.attack?.arrayX === newCharacter.arrayX && enemy?.attack?.arrayY === newCharacter.arrayY) {
           newCharacter.health -= 0.5;
           console.log("hit");
           character_gets_hit.play();

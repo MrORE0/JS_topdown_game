@@ -58,7 +58,7 @@ export class Character extends Entity {
 
       enemies.forEach((enemy) => {
         if (this.arrayX == enemy.arrayX && this.arrayY == enemy.arrayY && enemy.alive) {
-          this.health -= 0.5;
+          this.health -= 0.2;
           console.log("hit");
           character_gets_hit.play();
         }
@@ -80,7 +80,7 @@ export class Character extends Entity {
       this.x = newX;
       this.y = newY;
 
-      flashlight.style.setProperty("--Xpos", this.x + 200 + "px");
+      flashlight.style.setProperty("--Xpos", this.x + 450 + "px");
       flashlight.style.setProperty("--Ypos", this.y + 20 + "px");
 
       // Update character frame based on movement

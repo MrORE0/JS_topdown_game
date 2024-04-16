@@ -1,6 +1,11 @@
 body {
   background-color: black;
 }
+#hearts {
+  position: absolute;
+  top: 5em;
+}
+
 canvas {
   border: 3px solid black;
   display: block;

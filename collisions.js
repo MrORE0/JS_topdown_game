@@ -21,7 +21,7 @@ export function objectGetsItem(arrayX, arrayY, mapArray, character) {
       character.inventory["silver_key"] += 1;
     } else if (mapArray[arrayY][arrayX] === 148) {
       health_potion.play();
-      character.health = 3; // health goes to max
+      character.health = 12; // health goes to max
     } else if (mapArray[arrayY][arrayX] === 143) {
       gets_item.play();
       character.inventory["gold"] += 5;
