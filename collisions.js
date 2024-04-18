@@ -24,7 +24,7 @@ export function objectGetsItem(arrayX, arrayY, mapArray, character) {
       character.health = 12; // health goes to max
     } else if (mapArray[arrayY][arrayX] === 143) {
       gets_item.play();
-      character.inventory["gold"] += 5;
+      character.inventory["gold"] += 1;
     }
     items.splice(itemIndex, 1);
     mapArray[arrayY][arrayX] = 153;

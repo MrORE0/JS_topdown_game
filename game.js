@@ -19,6 +19,10 @@ hearts.src = "static/hearts.png";
 let hearts_width = 130;
 let hearts_height = 140;
 
+let coins = new Image();
+coins.src = "static/coins.png";
+let coin_size = 128;
+
 let gameRunning = false;
 let ctx; //thats context
 let CANVAS_WIDTH;
@@ -214,6 +218,17 @@ function runGame() {
       (hearts_width * newCharacter.health) / 4,
       hearts_height
     );
+    ctx_hearts.drawImage(
+      coins,
+      0,
+      0,
+      coin_size * newCharacter.inventory["gold"],
+      coin_size,
+      0,
+      hearts_height,
+      coin_size * newCharacter.inventory["gold"],
+      coin_size
+    );
     // Move character based on movement flags
     newCharacter.move(moveUp, moveDown, moveLeft, moveRight, mapArray, enemies, flashlight);
 
@@ -288,7 +303,7 @@ function activate(event) {
   if (key === " ") {
     if (newArrow.alive === false) {
       newArrow.shoot(ctx, newCharacter);
-      console.log(newCharacter.health);
+      console.log(newCharacter);
     }
   }
   if (key === "f") {
