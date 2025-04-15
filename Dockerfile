@@ -1,18 +1,12 @@
-# Use Python 3.10-slim image
-FROM python:3.10-slim
+# syntax=docker/dockerfile:1
 
-# Set working directory
+FROM python:3.13-slim
+
 WORKDIR /app
 
-# Copy application files into the container
-COPY . /app
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-# Install dependencies
-RUN pip install flask
-RUN pip install gunicorn
+COPY . .
 
-# Expose the port your app runs on
-EXPOSE 8080
-
-# Run the app
-CMD ["gunicorn", "-b", "0.0.0.0:$PORT", "server:app"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
