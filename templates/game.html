@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='game.css') }}" />
+    <title>LOST</title>
+  </head>
+  <body>
+    <audio id="background_music" src="{{ url_for('static', filename='background_music.wav') }}"></audio>
+    <audio id="character_gets_hit" src="{{ url_for('static', filename='character_gets_hit.wav') }}"></audio>
+    <audio id="character_dead" src="{{ url_for('static', filename='character_dead.wav') }}"></audio>
+    <audio id="creature_dead" src="{{ url_for('static', filename='creature_dead.wav') }}"></audio>
+    <audio id="gets_item" src="{{ url_for('static', filename='gets_item.wav') }}"></audio>
+    <audio id="health_potion" src="{{ url_for('static', filename='health_potion.wav') }}"></audio>
+    <audio id="won_game" src="{{ url_for('static', filename='won_game.wav') }}"></audio>
+
+    <div id="flashlight"></div>
+    <canvas width="800" height="800" id="main"></canvas>
+    <canvas id="hearts" width="400" height="300"></canvas>
+    <script src="{{ url_for('static', filename='game.js') }}" type="module"></script>
+  </body>
+</html>
